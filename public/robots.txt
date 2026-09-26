@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_preview/
+
+Sitemap: https://stackpipeline.com/sitemap.xml

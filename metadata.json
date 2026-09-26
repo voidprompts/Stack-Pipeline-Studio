@@ -1,0 +1,6 @@
+{
+  "name": "StackPipeline - B2B SaaS Affiliate & Automation Hub",
+  "description": "High-performance B2B SaaS affiliate & programmatic automation site generator with Google AdSense compliance, E-E-A-T architecture, and Cloudflare Pages CI/CD.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

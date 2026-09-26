@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  code, pre, kbd {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* ==========================================================================
+   ENTERPRISE PRINT & PDF EXPORT STYLESHEET
+   Optimized for technical blueprints, API architecture guides, and comparison matrices
+   ========================================================================== */
+@media print {
+  /* Page geometry & color accuracy */
+  @page {
+    margin: 1.5cm;
+    size: A4 portrait;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Reset dark backgrounds to high-contrast enterprise paper */
+  html,
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important; /* Slate 900 */
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Hide interactive, navigational, advertising, and overlay chrome */
+  nav,
+  header,
+  footer,
+  aside,
+  button,
+  input,
+  select,
+  textarea,
+  .no-print,
+  [data-print="hide"],
+  [role="dialog"]:not(.print-modal),
+  [role="status"],
+  .fixed,
+  .sticky,
+  .animate-pulse,
+  .animate-ping,
+  .animate-spin,
+  .adsense-banner,
+  .reaction-bar,
+  .comments-section,
+  .reading-progress-bar,
+  .bookmark-btn,
+  .share-btn,
+  .copy-btn {
+    display: none !important;
+  }
+
+  /* Ensure main content takes full page width */
+  main,
+  article,
+  .printable-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+  }
+
+  /* Typography formatting for clean legibility */
+  h1, h2, h3, h4, h5, h6 {
+    color: #0f172a !important;
+    page-break-after: avoid;
+    break-after: avoid;
+    font-weight: 700 !important;
+  }
+
+  h1 {
+    font-size: 20pt !important;
+    line-height: 1.2 !important;
+    margin-bottom: 12pt !important;
+  }
+
+  h2 {
+    font-size: 15pt !important;
+    margin-top: 18pt !important;
+    margin-bottom: 8pt !important;
+    border-bottom: 1.5pt solid #cbd5e1 !important;
+    padding-bottom: 4pt !important;
+  }
+
+  h3 {
+    font-size: 12pt !important;
+    margin-top: 14pt !important;
+    margin-bottom: 6pt !important;
+  }
+
+  p, li, blockquote {
+    color: #334155 !important; /* Slate 700 */
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Convert dark container cards to clean bordered technical sections */
+  div[class*="bg-slate-900"],
+  div[class*="bg-slate-950"],
+  div[class*="bg-slate-800"],
+  section[class*="bg-slate-900"],
+  section[class*="bg-slate-950"] {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border-color: #cbd5e1 !important; /* Slate 300 */
+    color: #0f172a !important;
+  }
+
+  /* Badges and metric highlights */
+  span[class*="text-emerald-"],
+  span[class*="text-purple-"],
+  span[class*="text-amber-"],
+  span[class*="text-cyan-"] {
+    font-weight: 700 !important;
+  }
+
+  span[class*="bg-emerald-"],
+  span[class*="bg-purple-"],
+  span[class*="bg-amber-"] {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  /* Technical code snippets and architecture blocks */
+  pre,
+  code {
+    background-color: #f8fafc !important; /* Slate 50 */
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 4pt !important;
+    font-family: 'JetBrains Mono', Courier, monospace !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  pre {
+    padding: 8pt 10pt !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    font-size: 8.5pt !important;
+    line-height: 1.4 !important;
+  }
+
+  code {
+    font-size: 9pt !important;
+    padding: 1pt 3pt !important;
+  }
+
+  /* Comparison matrices & feature comparison tables */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin: 12pt 0 !important;
+    font-size: 9.5pt !important;
+  }
+
+  th,
+  td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 6pt 8pt !important;
+    text-align: left !important;
+    color: #1e293b !important;
+  }
+
+  th {
+    background-color: #f1f5f9 !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+  }
+
+  tr:nth-child(even) td {
+    background-color: #f8fafc !important;
+  }
+
+  /* Step-by-step implementation guide cards */
+  article,
+  .tutorial-step,
+  .comparison-card,
+  .faq-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 12pt !important;
+  }
+
+  /* Show hyperlinks with URL destination in print */
+  a[href^="http"]:not([href*="stackpipeline.com"])::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #64748b;
+  }
+
+  /* Enterprise Print Header watermark info */
+  body::before {
+    content: "StackPipeline Engineering Library · Enterprise Architecture Report";
+    display: block;
+    text-align: right;
+    font-size: 8pt;
+    font-family: 'JetBrains Mono', monospace;
+    color: #94a3b8;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4pt;
+    margin-bottom: 16pt;
+  }
+}

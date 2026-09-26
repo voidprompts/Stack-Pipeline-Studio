@@ -1,0 +1,10 @@
+# ads.txt for StackPipeline (stackpipeline.com)
+# Compliance with Google AdSense, Google Ad Manager, and Programmatic Exchanges
+# Direct Account
+google.com, pub-9284719038291048, DIRECT, f08c47fec0942fa0
+
+# Programmatic Supply Chain Exchanges (Sample Authorized Resellers)
+appnexus.com, 1234, RESELLER, f5ab79cb980f11d1
+rubiconproject.com, 5678, RESELLER, 0bfd66d529a55803
+openx.com, 9012, RESELLER, 6a698e2ec38604c6
+pubmatic.com, 3456, RESELLER, 5d62e63b10edd766
