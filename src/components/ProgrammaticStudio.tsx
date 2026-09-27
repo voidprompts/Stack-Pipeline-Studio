@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { SAAS_TOOLS, AUTHORS } from '../data/saasTools';
 import { SoftwareTool } from '../types';
-import { Sparkles, Copy, Check, Download, ArrowRight, Code, Eye, FileText, Activity, Network } from 'lucide-react';
+import { Network, Copy, Check, Download, ArrowRight, Code, FileText, Activity } from 'lucide-react';
 import { IntegrationTestingStudio } from './IntegrationTestingStudio';
 import { DataFlowchart } from './DataFlowchart';
 
 interface ProgrammaticStudioProps {
   tools?: SoftwareTool[];
-  onLoadTutorialIntoView: (slug: string) => void;
+  onLoadTutorialIntoView?: (slug: string) => void;
 }
 
 export const ProgrammaticStudio: React.FC<ProgrammaticStudioProps> = ({
@@ -133,29 +133,25 @@ Set up a Catch Hook endpoint in ${selectedA.name} to receive change data capture
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-            <Sparkles className="w-5 h-5" />
+            <Network className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-slate-100">Programmatic Integration Studio</h3>
+              <h3 className="text-lg font-bold text-slate-100">Integration Studio & Topology Flowchart</h3>
               <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                {tools.length * (tools.length - 1)} Scaled Topologies ({tools.length} B2B SaaS Systems)
+                {tools.length} Verified SaaS Systems
               </span>
             </div>
             <p className="text-xs text-slate-400">
-              Auto-generate scaled Astro Content Collection nodes, Zod frontmatter, and automation blueprints
+              Interactive pipeline simulation, webhook testing, topology diagrams, and automation blueprint exports
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => onLoadTutorialIntoView('connect-zapier-to-hubspot')}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"
-          >
-            <Eye className="w-3.5 h-3.5" />
-            <span>Sample</span>
-          </button>
+          <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">
+            Select any Source &amp; Destination below
+          </span>
         </div>
       </div>
 
@@ -328,11 +324,12 @@ Set up a Catch Hook endpoint in ${selectedA.name} to receive change data capture
 
           <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-slate-400 gap-2">
             <span>
-              Generated Permalink:{' '}
+              Pipeline Reference:{' '}
               <code className="text-emerald-400 font-mono">/integrations/{generatedSlug}</code>
             </span>
             <span className="flex items-center gap-1 text-slate-400">
-              Ready for batch programmatic ingestion via <code className="text-slate-300 font-mono">npm run generate:matrix</code>
+              Export format:{' '}
+              <span className="text-slate-300 font-mono">Enterprise JSON / Astro Markdown</span>
             </span>
           </div>
 
