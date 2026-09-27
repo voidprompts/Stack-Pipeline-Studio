@@ -72,6 +72,7 @@ export const SaaSComparisonMatrix: React.FC<SaaSComparisonMatrixProps> = ({
               type="text"
               placeholder="Search tools, APIs, CRM..."
               value={searchQuery}
+              aria-label="Search tools by name, category, or features"
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
             />
@@ -81,6 +82,7 @@ export const SaaSComparisonMatrix: React.FC<SaaSComparisonMatrixProps> = ({
             <span>Sort:</span>
             <select
               value={sortKey}
+              aria-label="Sort software tools"
               onChange={(e) => setSortKey(e.target.value as any)}
               className="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
             >

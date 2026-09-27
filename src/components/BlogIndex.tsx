@@ -312,6 +312,7 @@ export const BlogIndex: React.FC<BlogIndexProps> = ({
               type="text"
               placeholder="Search by title, tool (e.g. Make vs Zapier, Segment, HubSpot), or format..."
               value={searchQuery}
+              aria-label="Search articles by title, tool, or format"
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full text-xs sm:text-sm pl-10 pr-20 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700/80 text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all shadow-inner"
             />

@@ -82,7 +82,9 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({
         // Fallback to clipboard
       }
     }
-    navigator.clipboard.writeText(url);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(url).catch(() => {});
+    }
     setCopiedShare(true);
     setTimeout(() => setCopiedShare(false), 2500);
   };

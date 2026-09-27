@@ -594,15 +594,17 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-2">
+                  <label htmlFor="roi-monthly-leads" className="block text-xs font-mono uppercase text-slate-400 mb-2">
                     Monthly Incoming Records / Leads: <span className="text-emerald-400 font-bold">{monthlyLeads.toLocaleString()}</span>
                   </label>
                   <input
+                    id="roi-monthly-leads"
                     type="range"
                     min="200"
                     max="20000"
                     step="100"
                     value={monthlyLeads}
+                    aria-label="Monthly incoming leads volume"
                     onChange={(e) => setMonthlyLeads(Number(e.target.value))}
                     className="w-full accent-emerald-500 bg-slate-800 cursor-pointer"
                   />
@@ -614,15 +616,17 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-2">
+                  <label htmlFor="roi-handling-time" className="block text-xs font-mono uppercase text-slate-400 mb-2">
                     Manual Handling Time per Record: <span className="text-emerald-400 font-bold">{manualEntryMinutes} mins</span>
                   </label>
                   <input
+                    id="roi-handling-time"
                     type="range"
                     min="1"
                     max="15"
                     step="1"
                     value={manualEntryMinutes}
+                    aria-label="Manual handling time in minutes per record"
                     onChange={(e) => setManualEntryMinutes(Number(e.target.value))}
                     className="w-full accent-emerald-500 bg-slate-800 cursor-pointer"
                   />
@@ -634,15 +638,17 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-2">
+                  <label htmlFor="roi-hourly-wage" className="block text-xs font-mono uppercase text-slate-400 mb-2">
                     Internal Operator Hourly Wage: <span className="text-emerald-400 font-bold">${hourlyWage}/hr</span>
                   </label>
                   <input
+                    id="roi-hourly-wage"
                     type="range"
                     min="15"
                     max="120"
                     step="5"
                     value={hourlyWage}
+                    aria-label="Operator hourly wage in USD"
                     onChange={(e) => setHourlyWage(Number(e.target.value))}
                     className="w-full accent-emerald-500 bg-slate-800 cursor-pointer"
                   />

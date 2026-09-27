@@ -70,6 +70,15 @@ export const IntegrationTestingStudio: React.FC<IntegrationTestingStudioProps> =
   const [copiedCode, setCopiedCode] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Clean up any running simulation timers on component unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
   const scenarios = [
     {
       id: 'rate_limit_429' as FailureScenarioId,
@@ -486,7 +495,9 @@ export const IntegrationTestingStudio: React.FC<IntegrationTestingStudioProps> =
   };
 
   const copyCode = (codeText: string) => {
-    navigator.clipboard.writeText(codeText);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(codeText).catch(() => {});
+    }
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
   };

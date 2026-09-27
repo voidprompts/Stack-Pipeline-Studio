@@ -163,7 +163,15 @@ Set up a Catch Hook endpoint in ${selectedA.name} to receive change data capture
           </label>
           <select
             value={toolA}
-            onChange={(e) => setToolA(e.target.value)}
+            onChange={(e) => {
+              const newA = e.target.value;
+              setToolA(newA);
+              if (newA === toolB) {
+                const fallback = tools.find((t) => t.id !== newA)?.id || '';
+                setToolB(fallback);
+              }
+            }}
+            aria-label="Software A (Source Trigger)"
             className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs font-semibold text-slate-200 focus:outline-none focus:border-emerald-500"
           >
             {tools.map((t) => (
@@ -180,7 +188,15 @@ Set up a Catch Hook endpoint in ${selectedA.name} to receive change data capture
           </label>
           <select
             value={toolB}
-            onChange={(e) => setToolB(e.target.value)}
+            onChange={(e) => {
+              const newB = e.target.value;
+              setToolB(newB);
+              if (newB === toolA) {
+                const fallback = tools.find((t) => t.id !== newB)?.id || '';
+                setToolA(fallback);
+              }
+            }}
+            aria-label="Software B (Destination)"
             className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs font-semibold text-slate-200 focus:outline-none focus:border-emerald-500"
           >
             {tools.map((t) => (
