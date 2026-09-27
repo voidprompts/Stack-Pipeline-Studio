@@ -804,8 +804,6 @@ export default function App() {
       {/* Footer */}
       <Footer
         onOpenLegal={handleOpenLegal}
-        onOpenAdSenseCompliance={() => setIsAdSenseModalOpen(true)}
-        onOpenSEOInspector={() => setIsSEOModalOpen(true)}
         onOpenNewsletter={() => setIsNewsletterOpen(true)}
         onOpenRSS={() => setIsRSSOpen(true)}
         onOpenBookmarks={() => setIsBookmarksOpen(true)}

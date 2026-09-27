@@ -1,10 +1,8 @@
 import React from 'react';
-import { Layers, ShieldAlert, FileText, Scale, Award, Globe, ExternalLink, Linkedin, Github } from 'lucide-react';
+import { Layers, ExternalLink, Linkedin, Github } from 'lucide-react';
 
 interface FooterProps {
   onOpenLegal: (tab: 'privacy' | 'terms' | 'affiliate' | 'editorial') => void;
-  onOpenAdSenseCompliance: () => void;
-  onOpenSEOInspector: () => void;
   onOpenNewsletter?: () => void;
   onOpenRSS?: () => void;
   onOpenBookmarks?: () => void;
@@ -12,8 +10,6 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({
   onOpenLegal,
-  onOpenAdSenseCompliance,
-  onOpenSEOInspector,
   onOpenNewsletter,
   onOpenRSS,
   onOpenBookmarks,
@@ -31,21 +27,11 @@ export const Footer: React.FC<FooterProps> = ({
               <span className="font-extrabold text-slate-100 text-sm tracking-tight">StackPipeline</span>
             </div>
             <p className="text-slate-400 leading-relaxed max-w-md text-xs">
-              The premier B2B SaaS automation and workflow orchestration reference. Built on ultra-fast static site generation (SSG) with strict Google AdSense, FTC affiliate, and E-E-A-T useful content compliance.
+              The premier engineering publication and benchmarking reference for enterprise B2B SaaS integrations, API topologies, and automated data workflows.
             </p>
-            <div className="flex items-center gap-4 text-[11px] font-mono text-slate-400">
-              <span className="flex items-center gap-1 text-emerald-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Edge Global CDN: 100% Uptime
-              </span>
-              <span>·</span>
-              <span>Lighthouse 100/100</span>
-              <span>·</span>
-              <span>CLS = 0.00</span>
-            </div>
 
-            {/* Official Profiles & Repository */}
-            <div className="flex items-center gap-3 pt-1">
+            {/* Official Profiles */}
+            <div className="flex items-center gap-3 pt-2">
               <a
                 href="https://www.linkedin.com/in/stack-pipeline"
                 target="_blank"
@@ -56,84 +42,103 @@ export const Footer: React.FC<FooterProps> = ({
                 <span>LinkedIn</span>
               </a>
               <a
-                href="https://github.com/voidprompts/StackPipeline"
+                href="https://github.com/voidprompts/Stack-Pipeline-Studio"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-colors text-[11px]"
               >
                 <Github className="w-3.5 h-3.5 text-slate-200" />
-                <span>GitHub Repository</span>
+                <span>GitHub</span>
               </a>
             </div>
           </div>
 
-            {/* Quick Legal & Compliance Links */}
+          {/* Quick Legal & Compliance Links */}
           <div className="space-y-2">
             <div className="text-[11px] font-mono uppercase tracking-wider text-slate-200 font-bold">
-              Legal & Compliance
+              Legal &amp; Compliance
             </div>
-            <ul className="space-y-1.5">
+            <ul className="space-y-2">
               <li>
                 <button
                   onClick={() => onOpenLegal('affiliate')}
-                  className="hover:text-emerald-400 transition-colors text-left"
+                  className="hover:text-emerald-400 transition-colors text-left cursor-pointer"
                 >
-                  FTC Affiliate Disclosure (16 CFR § 255)
+                  FTC Affiliate Disclosure
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenLegal('privacy')}
-                  className="hover:text-emerald-400 transition-colors text-left"
+                  className="hover:text-emerald-400 transition-colors text-left cursor-pointer"
                 >
-                  Privacy Policy & DART Cookie
+                  Privacy Policy &amp; Cookies
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenLegal('terms')}
-                  className="hover:text-emerald-400 transition-colors text-left"
+                  className="hover:text-emerald-400 transition-colors text-left cursor-pointer"
                 >
-                  Terms of Service & API License
+                  Terms of Service &amp; License
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onOpenLegal('editorial')}
-                  className="hover:text-emerald-400 transition-colors text-left"
+                  className="hover:text-emerald-400 transition-colors text-left cursor-pointer"
                 >
-                  E-E-A-T Editorial Review Standards
+                  E-E-A-T Editorial Standards
                 </button>
               </li>
+            </ul>
+          </div>
+
+          {/* Publisher & Syndication */}
+          <div className="space-y-2">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-200 font-bold">
+              Publisher &amp; Resources
+            </div>
+            <ul className="space-y-2">
               {onOpenNewsletter && (
                 <li>
                   <button
                     onClick={onOpenNewsletter}
-                    className="hover:text-emerald-400 text-emerald-400/90 transition-colors text-left font-semibold"
+                    className="hover:text-emerald-400 text-emerald-400/90 transition-colors text-left font-semibold cursor-pointer"
                   >
                     Weekly Architecture Newsletter
                   </button>
                 </li>
               )}
-            </ul>
-          </div>
-
-          {/* Crawler & Ad Exchange Directives */}
-          <div className="space-y-2">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-200 font-bold">
-              Publisher & Syndication
-            </div>
-            <ul className="space-y-1.5 font-mono text-[11px]">
+              {onOpenBookmarks && (
+                <li>
+                  <button
+                    onClick={onOpenBookmarks}
+                    className="hover:text-emerald-400 transition-colors flex items-center gap-1 text-slate-300 cursor-pointer"
+                  >
+                    <span>Saved Reading Library</span>
+                  </button>
+                </li>
+              )}
               <li>
-                <a
-                  href="/rss.xml"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-amber-400 transition-colors flex items-center gap-1 text-amber-400/90 font-semibold"
-                >
-                  <span>RSS 2.0 Feed (xml)</span>
-                  <ExternalLink className="w-3 h-3 text-amber-400/70" />
-                </a>
+                {onOpenRSS ? (
+                  <button
+                    onClick={onOpenRSS}
+                    className="hover:text-amber-400 transition-colors flex items-center gap-1 text-slate-300 cursor-pointer"
+                  >
+                    <span>RSS 2.0 Syndication</span>
+                  </button>
+                ) : (
+                  <a
+                    href="/rss.xml"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-amber-400 transition-colors flex items-center gap-1 text-slate-300"
+                  >
+                    <span>RSS 2.0 Feed</span>
+                    <ExternalLink className="w-3 h-3 text-slate-400" />
+                  </a>
+                )}
               </li>
               <li>
                 <a
@@ -142,67 +147,9 @@ export const Footer: React.FC<FooterProps> = ({
                   rel="noopener noreferrer"
                   className="hover:text-emerald-400 transition-colors flex items-center gap-1 text-slate-300"
                 >
-                  <span>sitemap.xml (Live Index)</span>
+                  <span>Sitemap Index</span>
                   <ExternalLink className="w-3 h-3 text-slate-400" />
                 </a>
-              </li>
-              {onOpenBookmarks && (
-                <li>
-                  <button
-                    onClick={onOpenBookmarks}
-                    className="hover:text-emerald-400 transition-colors flex items-center gap-1 text-slate-300"
-                  >
-                    <span>Saved Reading Library</span>
-                  </button>
-                </li>
-              )}
-              <li>
-                <a
-                  href="/ads.txt"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-emerald-400 transition-colors flex items-center gap-1 text-slate-300"
-                >
-                  <span>public/ads.txt</span>
-                  <ExternalLink className="w-3 h-3 text-slate-400" />
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/robots.txt"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-emerald-400 transition-colors flex items-center gap-1 text-slate-300"
-                >
-                  <span>public/robots.txt</span>
-                  <ExternalLink className="w-3 h-3 text-slate-400" />
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/api/download-zip"
-                  download="stackpipeline-complete-project.zip"
-                  className="hover:text-emerald-400 transition-colors flex items-center gap-1 text-emerald-400 font-semibold"
-                >
-                  <span>Download Project (ZIP)</span>
-                  <ExternalLink className="w-3 h-3 text-emerald-400" />
-                </a>
-              </li>
-              <li>
-                <button
-                  onClick={onOpenSEOInspector}
-                  className="hover:text-emerald-400 transition-colors flex items-center gap-1 text-slate-300"
-                >
-                  <span>SEO Schema &amp; SERP Inspector</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={onOpenAdSenseCompliance}
-                  className="hover:text-emerald-400 transition-colors flex items-center gap-1 text-slate-300"
-                >
-                  <span>AdSense Status & Verification</span>
-                </button>
               </li>
             </ul>
           </div>
@@ -211,10 +158,10 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom Bar with FTC Mandatory Notice */}
         <div className="pt-8 border-t border-slate-900 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
           <p>
-            © 2026 StackPipeline (stackpipeline.com). All trademarks, logos, and software names are the property of their respective owners.
+            © 2026 StackPipeline. All rights reserved. Software names and logos are trademarks of their respective owners.
           </p>
           <p className="text-slate-400 text-center md:text-right">
-            Affiliate Disclaimer: Outbound links may earn StackPipeline a referral commission at no additional cost to you.
+            Affiliate Disclosure: Some outbound links may earn StackPipeline a referral commission at no additional cost to you.
           </p>
         </div>
       </div>
