@@ -1,0 +1,62 @@
+name: StackPipeline 12-Hour Autopilot Publishing Engine
+
+on:
+  schedule:
+    # Runs every 12 hours (00:00 and 12:00 UTC)
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
+    # Allows manual trigger anytime from GitHub Actions UI
+
+concurrency:
+  group: autopilot-publishing
+  cancel-in-progress: false
+
+jobs:
+  publish-autopilot-content:
+    name: Generate & Publish Autonomous B2B Content
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci || npm install
+
+      - name: Execute Autonomous Content Generator
+        run: |
+          npm run autopilot:generate
+
+      - name: Verify TypeScript & Production Build
+        run: |
+          npm run build
+
+      - name: Commit and Push New Publication to GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Stage the updated persistent JSON store
+          git add src/data/generatedAutopilotContent.json
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "Notice: No new content generated in this cycle."
+          else
+            # Extract latest published title from git diff for descriptive commit message
+            git commit -m "chore(autopilot): publish new B2B technical guide [skip ci]"
+            git push origin HEAD:${{ github.ref_name || 'main' }}
+            echo "Successfully pushed new publication to GitHub! Cloudflare Pages build triggered."
+          fi

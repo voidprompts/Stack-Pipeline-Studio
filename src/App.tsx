@@ -22,6 +22,11 @@ import { NewsletterModal } from './components/NewsletterModal';
 import { SoftwareTool, IntegrationTutorial, Author, ToolComparison, ToolAlternativesHub, UnifiedArticle } from './types';
 import { COMPARISONS_DATA } from './data/comparisonsData';
 import { ALTERNATIVES_DATA } from './data/alternativesData';
+import {
+  GENERATED_TUTORIALS,
+  GENERATED_COMPARISONS,
+  GENERATED_ALTERNATIVES,
+} from './data/generatedContent';
 import { getToolOfficialUrl } from './data/saasWebsites';
 import { Calculator, Sparkles, FolderGit2, ShieldCheck, ArrowRight, Zap, Check } from 'lucide-react';
 
@@ -37,9 +42,21 @@ export default function App() {
 
   const [activeView, setActiveView] = useState<'blog' | 'tutorial' | 'matrix' | 'studio'>('blog');
   const [allTools, setAllTools] = useState<SoftwareTool[]>(SAAS_TOOLS);
-  const [allTutorials, setAllTutorials] = useState<IntegrationTutorial[]>(INTEGRATION_TUTORIALS);
-  const [allComparisons, setAllComparisons] = useState<ToolComparison[]>(COMPARISONS_DATA);
-  const [allAlternatives, setAllAlternatives] = useState<ToolAlternativesHub[]>(ALTERNATIVES_DATA);
+  const [allTutorials, setAllTutorials] = useState<IntegrationTutorial[]>(() => {
+    const existing = new Set(INTEGRATION_TUTORIALS.map((t) => t.slug));
+    const fresh = GENERATED_TUTORIALS.filter((t) => !existing.has(t.slug));
+    return [...fresh, ...INTEGRATION_TUTORIALS];
+  });
+  const [allComparisons, setAllComparisons] = useState<ToolComparison[]>(() => {
+    const existing = new Set(COMPARISONS_DATA.map((c) => c.slug));
+    const fresh = GENERATED_COMPARISONS.filter((c) => !existing.has(c.slug));
+    return [...fresh, ...COMPARISONS_DATA];
+  });
+  const [allAlternatives, setAllAlternatives] = useState<ToolAlternativesHub[]>(() => {
+    const existing = new Set(ALTERNATIVES_DATA.map((a) => a.slug));
+    const fresh = GENERATED_ALTERNATIVES.filter((a) => !existing.has(a.slug));
+    return [...fresh, ...ALTERNATIVES_DATA];
+  });
   const [selectedTutorialId, setSelectedTutorialId] = useState<string>(
     INTEGRATION_TUTORIALS[0].id
   );
