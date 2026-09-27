@@ -523,6 +523,17 @@ export default function App() {
     allTutorials.find((t) => t.id === selectedTutorialId) ||
     allTutorials[0];
 
+  // Keep browser address bar in exact sync with currently active tutorial in pipeline walkthrough
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (activeView === 'tutorial' && currentTutorial && !isReaderModalOpen) {
+      const currentParam = new URLSearchParams(window.location.search).get('article');
+      if (currentParam !== currentTutorial.slug) {
+        window.history.replaceState(null, '', `?article=${currentTutorial.slug}`);
+      }
+    }
+  }, [activeView, currentTutorial?.slug, isReaderModalOpen]);
+
   const handleOpenLegal = (tab: 'privacy' | 'terms' | 'affiliate' | 'editorial') => {
     setLegalTab(tab);
     setIsLegalModalOpen(true);
@@ -550,6 +561,9 @@ export default function App() {
     if (typeof window !== 'undefined') {
       if (view === 'blog') {
         window.history.pushState(null, '', '/');
+      } else if (view === 'tutorial') {
+        const tut = allTutorials.find((t) => t.id === selectedTutorialId) || allTutorials[0];
+        window.history.pushState(null, '', `?article=${tut.slug}`);
       } else {
         window.history.pushState(null, '', `?view=${view}`);
       }
@@ -642,11 +656,17 @@ export default function App() {
                 setSelectedComparison(comp);
                 setSelectedAlternativesHub(null);
                 setIsReaderModalOpen(true);
+                if (typeof window !== 'undefined') {
+                  window.history.pushState(null, '', `?compare=${comp.slug}`);
+                }
               }}
               onOpenAlternatives={(alt) => {
                 setSelectedAlternativesHub(alt);
                 setSelectedComparison(null);
                 setIsReaderModalOpen(true);
+                if (typeof window !== 'undefined') {
+                  window.history.pushState(null, '', `?alternatives=${alt.slug}`);
+                }
               }}
               bookmarkedIds={bookmarkedIds}
               onToggleBookmark={toggleBookmark}
@@ -850,9 +870,23 @@ export default function App() {
 
       <ContentHubReaderModal
         isOpen={isReaderModalOpen}
-        onClose={() => setIsReaderModalOpen(false)}
+        onClose={() => {
+          setIsReaderModalOpen(false);
+          setSelectedComparison(null);
+          setSelectedAlternativesHub(null);
+          if (typeof window !== 'undefined') {
+            if (activeView === 'tutorial' && currentTutorial) {
+              window.history.replaceState(null, '', `?article=${currentTutorial.slug}`);
+            } else if (activeView === 'blog') {
+              window.history.replaceState(null, '', '/');
+            } else {
+              window.history.replaceState(null, '', `?view=${activeView}`);
+            }
+          }
+        }}
         comparison={selectedComparison}
         alternativesHub={selectedAlternativesHub}
+        onOpenLegal={handleOpenLegal}
       />
 
       <PlatformEvaluationModal

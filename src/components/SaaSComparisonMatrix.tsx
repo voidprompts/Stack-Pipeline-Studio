@@ -60,7 +60,8 @@ export const SaaSComparisonMatrix: React.FC<SaaSComparisonMatrixProps> = ({
           </div>
           <h2 className="text-2xl font-bold text-slate-100">B2B SaaS Integration & Automation Matrix</h2>
           <p className="text-xs text-slate-400 mt-1">
-            Independent evaluations, rate-limit thresholds, and verified affiliate pricing benchmarks
+            Independent evaluations, rate-limit thresholds, and verified affiliate pricing benchmarks.
+            <span className="ml-1 text-[11px] font-mono text-emerald-400">FTC Disclosure: Content contains sponsored affiliate links (rel="sponsored noopener")</span>
           </p>
         </div>
 
@@ -184,12 +185,12 @@ export const SaaSComparisonMatrix: React.FC<SaaSComparisonMatrixProps> = ({
                     </td>
                     <td className="py-4 px-4 text-right">
                       <a
-                        href={tool.websiteUrl || getToolOfficialUrl(tool.slug || tool.name)}
+                        href={`/go/${tool.slug || tool.name.toLowerCase()}`}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="sponsored noopener"
                         onClick={(e) => e.stopPropagation()}
                         className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-xs transition-colors shadow-sm cursor-pointer"
-                        title={`Visit official ${tool.name} website`}
+                        title={`Visit official ${tool.name} website (Sponsored link)`}
                       >
                         Visit Site
                         <ExternalLink className="w-3 h-3" />

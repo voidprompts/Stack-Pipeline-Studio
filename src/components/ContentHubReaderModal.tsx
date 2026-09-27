@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ToolComparison, ToolAlternativesHub } from '../types';
 import { getToolOfficialUrl } from '../data/saasWebsites';
 import {
@@ -16,6 +16,8 @@ import {
   GitCompare,
   Layers,
   ChevronDown,
+  Share2,
+  Printer,
 } from 'lucide-react';
 
 interface ContentHubReaderModalProps {
@@ -23,6 +25,7 @@ interface ContentHubReaderModalProps {
   onClose: () => void;
   comparison?: ToolComparison | null;
   alternativesHub?: ToolAlternativesHub | null;
+  onOpenLegal?: (tab: 'privacy' | 'terms' | 'affiliate' | 'editorial') => void;
 }
 
 export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
@@ -30,11 +33,54 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
   onClose,
   comparison,
   alternativesHub,
+  onOpenLegal,
 }) => {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [copied, setCopied] = useState(false);
+  const [copiedShare, setCopiedShare] = useState(false);
 
-  // Dynamically update OpenGraph and Twitter tags when viewing a comparison or alternatives hub
+  // Compute exact deep-link URL for sharing
+  const shareUrl = useMemo(() => {
+    if (typeof window === 'undefined') {
+      if (comparison) return `https://stackpipeline.com/?compare=${comparison.slug}`;
+      if (alternativesHub) return `https://stackpipeline.com/?alternatives=${alternativesHub.slug}`;
+      return 'https://stackpipeline.com';
+    }
+    const origin = window.location.origin;
+    if (comparison) {
+      return `${origin}/?compare=${comparison.slug}`;
+    }
+    if (alternativesHub) {
+      return `${origin}/?alternatives=${alternativesHub.slug}`;
+    }
+    return window.location.href;
+  }, [comparison, alternativesHub]);
+
+  const handleShare = async () => {
+    const title = comparison ? comparison.title : alternativesHub?.title || 'StackPipeline Comparison';
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text: `Check out this architecture benchmark on StackPipeline: ${title}`,
+          url: shareUrl,
+        });
+        return;
+      } catch {
+        // Fallback to clipboard
+      }
+    }
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    setCopiedShare(true);
+    setTimeout(() => setCopiedShare(false), 2500);
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  // Dynamically update OpenGraph, Twitter tags, and address bar when viewing a comparison or alternatives hub
   useEffect(() => {
     if (!isOpen || (!comparison && !alternativesHub)) return;
 
@@ -44,10 +90,19 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
     const targetSlug = comparison ? comparison.slug : alternativesHub?.slug || '';
     const brandedTitle = `${targetTitle} | StackPipeline`;
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://stackpipeline.com';
-    const canonicalUrl = `${origin}/compare/${targetSlug}`;
+    const canonicalUrl = `${origin}/?${comparison ? 'compare' : 'alternatives'}=${targetSlug}`;
     const socialImageUrl = `${origin}/og/${targetSlug}.svg`;
 
     document.title = brandedTitle;
+
+    // Keep browser address bar in exact sync with opened modal
+    if (typeof window !== 'undefined') {
+      const paramKey = comparison ? 'compare' : 'alternatives';
+      const currentVal = new URLSearchParams(window.location.search).get(paramKey);
+      if (currentVal !== targetSlug) {
+        window.history.replaceState(null, '', `?${paramKey}=${targetSlug}`);
+      }
+    }
 
     const cleanups: Array<() => void> = [];
 
@@ -102,12 +157,12 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
     >
       <div className="relative w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header Bar */}
-        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
               {comparison ? <GitCompare className="w-5 h-5" /> : <Layers className="w-5 h-5" />}
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">
                   {comparison ? 'Head-to-Head Comparison' : 'Top Alternatives Hub'}
@@ -116,17 +171,51 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
                   Autonomously Evaluated · AdSense &amp; E-E-A-T Verified
                 </span>
               </div>
-              <h2 id="reader-modal-title" className="text-base sm:text-lg font-bold text-slate-100 line-clamp-1">
+              <h2 id="reader-modal-title" className="text-base sm:text-lg font-bold text-slate-100 truncate">
                 {comparison ? comparison.title : alternativesHub?.title}
               </h2>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
+
+          {/* Header Action Buttons */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Share Button */}
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+              title="Share or copy direct link"
+            >
+              {copiedShare ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-400 font-bold">Link Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-3.5 h-3.5 text-slate-300" />
+                  <span className="hidden sm:inline">Share</span>
+                </>
+              )}
+            </button>
+
+            {/* Print Button */}
+            <button
+              onClick={handlePrint}
+              className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-lg text-xs transition-colors cursor-pointer"
+              title="Print clean architecture report"
+            >
+              <Printer className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="p-1.5 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              title="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Content Body */}
@@ -170,9 +259,9 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
                     ))}
                   </div>
                   <a
-                    href={comparison.toolA.websiteUrl || getToolOfficialUrl(comparison.toolA.slug || comparison.toolA.name)}
+                    href={`/go/${comparison.toolA.slug || comparison.toolA.name.toLowerCase()}`}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="sponsored noopener"
                     className="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow cursor-pointer"
                   >
                     Visit {comparison.toolA.name} (Official Website)
@@ -196,9 +285,9 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
                     ))}
                   </div>
                   <a
-                    href={comparison.toolB.websiteUrl || getToolOfficialUrl(comparison.toolB.slug || comparison.toolB.name)}
+                    href={`/go/${comparison.toolB.slug || comparison.toolB.name.toLowerCase()}`}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="sponsored noopener"
                     className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     Visit {comparison.toolB.name} (Official Website)
@@ -331,9 +420,9 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
 
                       <div className="shrink-0 flex items-center gap-2">
                         <a
-                          href={alt.tool.websiteUrl || getToolOfficialUrl(alt.tool.slug || alt.tool.name)}
+                          href={`/go/${alt.tool.slug || alt.tool.name.toLowerCase()}`}
                           target="_blank"
-                          rel="noopener noreferrer"
+                          rel="sponsored noopener"
                           className="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow cursor-pointer"
                         >
                           Explore {alt.tool.name}
@@ -388,16 +477,50 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs text-slate-400">
-          <span className="text-[11px] leading-relaxed">
-            FTC Disclosure: StackPipeline evaluates software independently. Outbound partner links may earn a referral commission at no additional cost to you.
-          </span>
-          <button
-            onClick={onClose}
-            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors cursor-pointer shrink-0 ml-4"
-          >
-            Close Guide
-          </button>
+        <div className="p-4 border-t border-slate-800 bg-slate-950/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex-1 pr-2">
+            <p className="text-[11px] leading-relaxed text-slate-400">
+              <strong className="text-slate-300">FTC Disclosure:</strong> Content contains sponsored affiliate links (<code className="text-emerald-400 font-mono text-[10px]">rel="sponsored noopener"</code>). StackPipeline may earn compensation from qualified partner sign-ups at zero additional cost to you.
+              {onOpenLegal && (
+                <button
+                  onClick={() => {
+                    onClose();
+                    onOpenLegal('affiliate');
+                  }}
+                  className="ml-1.5 text-emerald-400 hover:text-emerald-300 underline underline-offset-2 cursor-pointer font-medium"
+                >
+                  View Full Affiliate Disclosure
+                </button>
+              )}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+              title="Share or copy direct link"
+            >
+              {copiedShare ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-400 font-bold">Link Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-3.5 h-3.5 text-slate-300" />
+                  <span>Share Guide</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={onClose}
+              className="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg font-bold transition-colors cursor-pointer"
+            >
+              Close Guide
+            </button>
+          </div>
         </div>
       </div>
     </div>

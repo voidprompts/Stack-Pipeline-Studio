@@ -18,6 +18,8 @@ import {
   Zap,
   Sparkles,
   ExternalLink,
+  Share2,
+  Check,
 } from 'lucide-react';
 import { IntegrationTutorial, UnifiedArticle, ToolComparison, ToolAlternativesHub } from '../types';
 
@@ -55,7 +57,25 @@ export const BlogIndex: React.FC<BlogIndexProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'latest' | 'quickest' | 'deepest'>('latest');
+  const [copiedCardId, setCopiedCardId] = useState<string | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const handleShareCard = (e: React.MouseEvent, article: UnifiedArticle) => {
+    e.stopPropagation();
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://stackpipeline.com';
+    let url = `${origin}/?article=${article.originalTutorial?.slug || article.slug}`;
+    if (article.archetype === 'comparison') {
+      url = `${origin}/?compare=${article.originalComparison?.slug || article.slug}`;
+    } else if (article.archetype === 'alternatives') {
+      url = `${origin}/?alternatives=${article.originalAlternatives?.slug || article.slug}`;
+    }
+
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(url).catch(() => {});
+    }
+    setCopiedCardId(article.id);
+    setTimeout(() => setCopiedCardId(null), 2000);
+  };
 
   useEffect(() => {
     if (initialCategory) {
@@ -660,6 +680,17 @@ export const BlogIndex: React.FC<BlogIndexProps> = ({
                       )}
 
                       <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={(e) => handleShareCard(e, article)}
+                          className="p-1 rounded text-slate-500 hover:text-slate-200 transition-colors cursor-pointer"
+                          title="Copy direct shareable link"
+                        >
+                          {copiedCardId === article.id ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          ) : (
+                            <Share2 className="w-3.5 h-3.5" />
+                          )}
+                        </button>
                         <button
                           onClick={() => onToggleBookmark(article.id)}
                           className={`p-1 rounded transition-colors cursor-pointer ${

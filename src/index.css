@@ -29,11 +29,12 @@
 /* ==========================================================================
    ENTERPRISE PRINT & PDF EXPORT STYLESHEET
    Optimized for technical blueprints, API architecture guides, and comparison matrices
+   Eliminates blank pages, restores high-contrast typography, and hides interactive controls
    ========================================================================== */
 @media print {
   /* Page geometry & color accuracy */
   @page {
-    margin: 1.5cm;
+    margin: 1.2cm 1.4cm;
     size: A4 portrait;
   }
 
@@ -46,126 +47,203 @@
     text-shadow: none !important;
   }
 
-  /* Reset dark backgrounds to high-contrast enterprise paper */
+  /* Reset document flow to block layout to eliminate flexbox 100vh blank first/last page bug */
   html,
-  body {
+  body,
+  #root,
+  #root > div,
+  main,
+  article {
     background-color: #ffffff !important;
-    color: #0f172a !important; /* Slate 900 */
-    font-size: 11pt !important;
-    line-height: 1.5 !important;
+    color: #0f172a !important;
+    display: block !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    position: static !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+    font-size: 10pt !important;
+    line-height: 1.45 !important;
   }
 
-  /* Hide interactive, navigational, advertising, and overlay chrome */
+  /* Flatten CSS grid containers into clean linear blocks to allow natural multi-page pagination */
+  .grid,
+  div[class*="grid-cols-"],
+  div[class*="lg:grid-cols-"] {
+    display: block !important;
+  }
+
+  .grid > *,
+  div[class*="grid-cols-"] > *,
+  div[class*="lg:grid-cols-"] > * {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 12pt !important;
+  }
+
+  /* Enterprise Document Header */
+  body::before {
+    content: "StackPipeline Engineering Library · Enterprise Architecture & Technical Integration Report";
+    display: block !important;
+    text-align: right;
+    font-size: 8pt;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    color: #64748b !important;
+    border-bottom: 1.5pt solid #cbd5e1;
+    padding-bottom: 4pt;
+    margin-bottom: 12pt;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Hide interactive, navigation, advertising, and chrome components */
   nav,
   .global-navbar,
-  header:not(.article-header),
+  header.global-navbar,
   footer,
   aside,
   button,
   input,
   select,
   textarea,
+  form,
   .no-print,
+  .print\:hidden,
   .interactive-lab,
   .roi-calculator,
   .comments-form,
-  [data-print="hide"],
-  [role="dialog"]:not(.print-modal),
-  [role="status"],
-  .fixed,
-  .sticky,
-  .animate-pulse,
-  .animate-ping,
-  .animate-spin,
-  .adsense-banner,
   .reaction-bar,
   .reading-progress-bar,
   .bookmark-btn,
   .share-btn,
-  .copy-btn {
+  .copy-btn,
+  .adsense-banner,
+  [data-print="hide"],
+  [role="status"] {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Ensure article header is prominently printed on page 1 */
+  /* Article Header - Render prominently on Page 1 */
   .article-header {
     display: block !important;
-    page-break-inside: avoid;
-    break-inside: avoid;
+    visibility: visible !important;
     margin-top: 0 !important;
-    margin-bottom: 16pt !important;
+    margin-bottom: 14pt !important;
+    padding-bottom: 10pt !important;
     border-bottom: 2pt solid #0f172a !important;
-    padding-bottom: 12pt !important;
+    page-break-after: avoid;
+    break-after: avoid;
   }
 
   .article-header h1 {
-    font-size: 22pt !important;
+    font-size: 20pt !important;
     line-height: 1.25 !important;
     color: #0f172a !important;
+    font-weight: 800 !important;
+    margin-top: 4pt !important;
     margin-bottom: 8pt !important;
   }
 
-  /* Ensure main content takes full page width */
-  main,
-  article,
-  .printable-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    float: none !important;
+  .article-header p {
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    color: #334155 !important;
+    margin-bottom: 10pt !important;
   }
 
-  /* Typography formatting for clean legibility */
+  /* High contrast typography for all headings */
   h1, h2, h3, h4, h5, h6 {
     color: #0f172a !important;
+    font-weight: 700 !important;
     page-break-after: avoid;
     break-after: avoid;
-    font-weight: 700 !important;
   }
 
   h1 {
-    font-size: 20pt !important;
+    font-size: 18pt !important;
     line-height: 1.2 !important;
-    margin-bottom: 12pt !important;
+    margin-bottom: 10pt !important;
   }
 
   h2 {
-    font-size: 15pt !important;
-    margin-top: 18pt !important;
-    margin-bottom: 8pt !important;
-    border-bottom: 1.5pt solid #cbd5e1 !important;
-    padding-bottom: 4pt !important;
+    font-size: 14pt !important;
+    margin-top: 14pt !important;
+    margin-bottom: 6pt !important;
+    border-bottom: 1pt solid #cbd5e1 !important;
+    padding-bottom: 3pt !important;
   }
 
   h3 {
-    font-size: 12pt !important;
-    margin-top: 14pt !important;
-    margin-bottom: 6pt !important;
+    font-size: 11pt !important;
+    margin-top: 10pt !important;
+    margin-bottom: 4pt !important;
   }
 
   p, li, blockquote {
-    color: #334155 !important; /* Slate 700 */
+    color: #334155 !important;
     orphans: 3;
     widows: 3;
   }
 
-  /* Convert dark container cards to clean bordered technical sections */
-  div[class*="bg-slate-900"],
-  div[class*="bg-slate-950"],
-  div[class*="bg-slate-800"],
-  section[class*="bg-slate-900"],
-  section[class*="bg-slate-950"] {
+  /* Force high contrast dark text on all cards (eliminates white-on-white text) */
+  div[class*="bg-slate-"],
+  section[class*="bg-slate-"],
+  aside[class*="bg-slate-"],
+  div[class*="bg-emerald-"],
+  section[class*="bg-emerald-"] {
     background-color: #ffffff !important;
     background-image: none !important;
-    border-color: #cbd5e1 !important; /* Slate 300 */
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+
+  div[class*="bg-slate-"] h1,
+  div[class*="bg-slate-"] h2,
+  div[class*="bg-slate-"] h3,
+  div[class*="bg-slate-"] h4,
+  div[class*="bg-slate-"] h5,
+  div[class*="bg-slate-"] strong,
+  div[class*="bg-slate-"] b,
+  section[class*="bg-slate-"] h1,
+  section[class*="bg-slate-"] h2,
+  section[class*="bg-slate-"] h3,
+  section[class*="bg-slate-"] h4,
+  section[class*="bg-slate-"] strong {
     color: #0f172a !important;
   }
 
-  /* Badges and metric highlights */
-  span[class*="text-emerald-"],
-  span[class*="text-purple-"],
-  span[class*="text-amber-"],
-  span[class*="text-cyan-"] {
+  div[class*="bg-slate-"] p,
+  div[class*="bg-slate-"] span,
+  div[class*="bg-slate-"] div,
+  div[class*="bg-slate-"] li,
+  section[class*="bg-slate-"] p,
+  section[class*="bg-slate-"] span,
+  section[class*="bg-slate-"] div,
+  section[class*="bg-slate-"] li {
+    color: #334155 !important;
+  }
+
+  /* Highlight accents in print */
+  [class*="text-emerald-"],
+  [class*="text-teal-"],
+  [class*="text-cyan-"] {
+    color: #047857 !important;
+    font-weight: 700 !important;
+  }
+
+  [class*="text-amber-"] {
+    color: #b45309 !important;
     font-weight: 700 !important;
   }
 
@@ -180,7 +258,7 @@
   /* Technical code snippets and architecture blocks */
   pre,
   code {
-    background-color: #f8fafc !important; /* Slate 50 */
+    background-color: #f8fafc !important;
     color: #0f172a !important;
     border: 1px solid #cbd5e1 !important;
     border-radius: 4pt !important;
@@ -190,15 +268,16 @@
   }
 
   pre {
-    padding: 8pt 10pt !important;
+    padding: 6pt 8pt !important;
     white-space: pre-wrap !important;
     word-break: break-word !important;
-    font-size: 8.5pt !important;
-    line-height: 1.4 !important;
+    font-size: 8pt !important;
+    line-height: 1.35 !important;
+    margin: 6pt 0 !important;
   }
 
   code {
-    font-size: 9pt !important;
+    font-size: 8.5pt !important;
     padding: 1pt 3pt !important;
   }
 
@@ -208,14 +287,14 @@
     border-collapse: collapse !important;
     page-break-inside: avoid;
     break-inside: avoid;
-    margin: 12pt 0 !important;
-    font-size: 9.5pt !important;
+    margin: 8pt 0 !important;
+    font-size: 9pt !important;
   }
 
   th,
   td {
     border: 1px solid #cbd5e1 !important;
-    padding: 6pt 8pt !important;
+    padding: 4pt 6pt !important;
     text-align: left !important;
     color: #1e293b !important;
   }
@@ -236,41 +315,13 @@
   .faq-item {
     page-break-inside: avoid;
     break-inside: avoid;
-    margin-bottom: 12pt !important;
+    margin-bottom: 10pt !important;
   }
 
-  /* Force high contrast text on all printable cards */
-  div[class*="bg-slate-"],
-  section[class*="bg-slate-"] {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-    border-color: #cbd5e1 !important;
-  }
-
-  div[class*="bg-slate-"] p,
-  div[class*="bg-slate-"] span,
-  section[class*="bg-slate-"] p,
-  section[class*="bg-slate-"] span {
-    color: #334155 !important;
-  }
-
-  /* Show hyperlinks with URL destination in print */
-  a[href^="http"]:not([href*="stackpipeline.com"])::after {
+  /* Show hyperlinked official domains in print */
+  a[href^="http"]:not([href*="stackpipeline.com"]):not([href*="pages.dev"])::after {
     content: " (" attr(href) ")";
-    font-size: 8pt;
+    font-size: 7.5pt;
     color: #64748b;
-  }
-
-  /* Enterprise Print Header watermark info */
-  body::before {
-    content: "StackPipeline Engineering Library · Enterprise Architecture Report";
-    display: block;
-    text-align: right;
-    font-size: 8pt;
-    font-family: 'JetBrains Mono', monospace;
-    color: #94a3b8;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 4pt;
-    margin-bottom: 16pt;
   }
 }

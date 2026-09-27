@@ -63,14 +63,35 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
   const [isLargeText, setIsLargeText] = useState(false);
   const [showFaqSchemaPreview, setShowFaqSchemaPreview] = useState(false);
   const [copiedFaqSchema, setCopiedFaqSchema] = useState(false);
+  const [copiedShareTop, setCopiedShareTop] = useState(false);
 
   // Construct absolute deep-link URL for sharing and social distribution
   const shareUrl = useMemo(() => {
     if (typeof window !== 'undefined') {
       return `${window.location.origin}/?article=${tutorial.slug}`;
     }
-    return `https://stackpipeline.com/integrations/${tutorial.slug}`;
+    return `https://stackpipeline.com/?article=${tutorial.slug}`;
   }, [tutorial.slug]);
+
+  const handleShareTop = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: tutorial.title,
+          text: `Check out this technical pipeline guide on StackPipeline: ${tutorial.title}`,
+          url: shareUrl,
+        });
+        return;
+      } catch {
+        // Fallback to clipboard
+      }
+    }
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    setCopiedShareTop(true);
+    setTimeout(() => setCopiedShareTop(false), 2500);
+  };
 
   // Safe fallback for author and technicalReviewer to guarantee zero undefined crashes
   const author = tutorial.author || {
@@ -440,6 +461,25 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
         {/* Reader Display Mode Controls */}
         <div className="flex items-center gap-2">
+          {/* Share Article Direct Link Button */}
+          <button
+            onClick={handleShareTop}
+            className="px-3 py-1 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
+            title="Copy or share direct article deep-link"
+          >
+            {copiedShareTop ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-emerald-400 font-bold">Link Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5 text-slate-400" />
+                <span>Share Guide</span>
+              </>
+            )}
+          </button>
+
           <button
             onClick={() => setIsLargeText((prev) => !prev)}
             className={`px-2.5 py-1 rounded-lg border text-xs font-mono transition-colors flex items-center gap-1 cursor-pointer ${
@@ -841,10 +881,10 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
           <section className="my-10 p-6 rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-900/80 to-slate-950">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-slate-100">
-                Recommended Software & Direct Offers
+                Recommended Software &amp; Direct Offers
               </h3>
               <span className="text-[10px] font-mono text-slate-400">
-                FTC Disclosure: Sponsored Affiliate Partnerships
+                FTC Disclosure: Content contains sponsored affiliate links (rel="sponsored noopener")
               </span>
             </div>
 
@@ -861,9 +901,9 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
                   </p>
                 </div>
                 <a
-                  href={tutorial.softwareA.websiteUrl || getToolOfficialUrl(tutorial.softwareA.slug || tutorial.softwareA.name)}
+                  href={`/go/${tutorial.softwareA.slug || tutorial.softwareA.name.toLowerCase()}`}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="sponsored noopener"
                   className="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
                 >
                   Visit {tutorial.softwareA.name} (Official Website)
@@ -883,9 +923,9 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
                   </p>
                 </div>
                 <a
-                  href={tutorial.softwareB.websiteUrl || getToolOfficialUrl(tutorial.softwareB.slug || tutorial.softwareB.name)}
+                  href={`/go/${tutorial.softwareB.slug || tutorial.softwareB.name.toLowerCase()}`}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="sponsored noopener"
                   className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   Visit {tutorial.softwareB.name} (Official Website)

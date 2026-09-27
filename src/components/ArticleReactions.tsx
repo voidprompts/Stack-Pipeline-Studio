@@ -70,12 +70,13 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({
   };
 
   const handleShare = async () => {
+    const directUrl = url || (typeof window !== 'undefined' ? `${window.location.origin}/?article=${articleId}` : `https://stackpipeline.com/?article=${articleId}`);
     if (navigator.share) {
       try {
         await navigator.share({
           title,
           text: `Check out this technical pipeline guide on StackPipeline: ${title}`,
-          url,
+          url: directUrl,
         });
         return;
       } catch {
@@ -83,7 +84,7 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({
       }
     }
     if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(url).catch(() => {});
+      navigator.clipboard.writeText(directUrl).catch(() => {});
     }
     setCopiedShare(true);
     setTimeout(() => setCopiedShare(false), 2500);
