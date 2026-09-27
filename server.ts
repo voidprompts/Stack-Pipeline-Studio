@@ -616,8 +616,8 @@ const AUTONOMOUS_MATRIX_POOL: Array<{
 class AutonomousEngine {
   public enabled: boolean = true;
   public autoReplenish: boolean = true; // Automatically synthesizes & enqueues new targets when queue is low
-  public intervalSeconds: number = 30; // Runs periodic automated evaluation every 30s
-  public intervalMinutes: number = 0.5;
+  public intervalSeconds: number = 43200; // Runs periodic automated evaluation every 12 hours (43,200s)
+  public intervalMinutes: number = 720; // 12 hours
   public lastRunAt?: string = new Date().toISOString();
   public nextRunAt?: string;
   public totalGenerated: number = 6;
@@ -629,7 +629,7 @@ class AutonomousEngine {
     {
       timestamp: new Date().toISOString(),
       level: 'success',
-      message: 'Autonomous B2B Content Engine initialized with 6 pre-published authoritative guides, comparisons & alternatives.',
+      message: 'Autonomous B2B Content Engine initialized on 12-hour background publishing cadence with pre-published authoritative guides.',
     },
   ];
 

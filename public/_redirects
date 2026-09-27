@@ -1,0 +1,3 @@
+# Cloudflare Pages SPA Routing
+# Static assets and exact files (e.g. sitemap.xml, rss.xml, ads.txt, robots.txt) take precedence automatically
+/*    /index.html   200

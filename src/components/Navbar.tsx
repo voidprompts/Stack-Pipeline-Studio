@@ -20,35 +20,19 @@ import {
 } from 'lucide-react';
 
 interface NavbarProps {
-  onOpenRewrittenPrompt: () => void;
-  onOpenCodebaseExport: () => void;
-  onOpenAdSenseCompliance: () => void;
-  onOpenSEOInspector: () => void;
-  onOpenEvaluationModal?: () => void;
-  onOpenAutonomousEngine?: () => void;
   onOpenBookmarks?: () => void;
   onOpenNewsletter?: () => void;
   onOpenRSS?: () => void;
   savedCount?: number;
-  showAds: boolean;
-  onToggleAds: () => void;
   activeView: 'blog' | 'tutorial' | 'matrix' | 'studio';
   setActiveView: (view: 'blog' | 'tutorial' | 'matrix' | 'studio') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  onOpenRewrittenPrompt,
-  onOpenCodebaseExport,
-  onOpenAdSenseCompliance,
-  onOpenSEOInspector,
-  onOpenEvaluationModal,
-  onOpenAutonomousEngine,
   onOpenBookmarks,
   onOpenNewsletter,
   onOpenRSS,
   savedCount = 0,
-  showAds,
-  onToggleAds,
   activeView,
   setActiveView,
 }) => {
@@ -136,7 +120,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {onOpenBookmarks && (
             <button
               onClick={onOpenBookmarks}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                 savedCount > 0
                   ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
                   : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
@@ -157,11 +141,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           {onOpenNewsletter && (
             <button
               onClick={onOpenNewsletter}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
               title="Subscribe to weekly technical architecture dispatch"
             >
               <Mail className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Newsletter</span>
+              <span className="hidden sm:inline">Newsletter</span>
             </button>
           )}
 
@@ -169,103 +153,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           {onOpenRSS && (
             <button
               onClick={onOpenRSS}
-              className="hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
               title="Syndication RSS & Atom feed"
             >
               <Rss className="w-3.5 h-3.5 text-amber-400" />
-              <span>RSS</span>
+              <span className="hidden md:inline">RSS</span>
             </button>
           )}
-
-          {/* AdSense View Toggle */}
-          <button
-            onClick={onToggleAds}
-            className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono transition-colors border cursor-pointer ${
-              showAds
-                ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
-                : 'bg-slate-900 border-slate-800 text-slate-400'
-            }`}
-            title="Toggle Google AdSense layout slots"
-          >
-            {showAds ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-            <span>{showAds ? 'Ads Active' : 'Clean View'}</span>
-          </button>
-
-          {/* AdSense Compliance */}
-          <button
-            onClick={onOpenAdSenseCompliance}
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
-            title="Inspect ads.txt and Google AdSense compliance"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden lg:inline">ads.txt</span>
-          </button>
-
-          {/* SEO & Schema Modal */}
-          <button
-            onClick={onOpenSEOInspector}
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 rounded-lg text-xs font-medium transition-colors cursor-pointer"
-            title="Inspect Schema.org JSON-LD & SERP simulator"
-          >
-            <FileCode className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden lg:inline">Schema SEO</span>
-          </button>
-
-          {/* Astro Codebase Export */}
-          <button
-            onClick={onOpenCodebaseExport}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
-            title="View & download production Astro codebase"
-          >
-            <FolderGit2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden lg:inline">Astro Codebase</span>
-          </button>
-
-          {/* Direct ZIP Download */}
-          <a
-            href="/api/download-zip"
-            download="stackpipeline-complete-project.zip"
-            className="hidden 2xl:flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
-            title="Download complete project files as ZIP archive"
-          >
-            <Download className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Download ZIP</span>
-          </a>
-
-          {/* Autonomous B2B Content Engine */}
-          {onOpenAutonomousEngine && (
-            <button
-              onClick={onOpenAutonomousEngine}
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-emerald-500/15 to-cyan-500/15 hover:from-emerald-500/25 hover:to-cyan-500/25 text-emerald-300 border border-emerald-500/40 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-sm shadow-emerald-500/10"
-              title="Autonomous B2B Content Engine · Background auto-pilot for guides, comparisons, and alternatives"
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span className="hidden md:inline">Auto-Pilot Engine</span>
-              <span className="md:hidden">Auto-Pilot</span>
-            </button>
-          )}
-
-          {/* AI Platform Evaluation */}
-          {onOpenEvaluationModal && (
-            <button
-              onClick={onOpenEvaluationModal}
-              className="hidden xl:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
-              title="Automatically search or identify new Software Platforms and generate How-To Guides"
-            >
-              <Zap className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Evaluate</span>
-            </button>
-          )}
-
-          {/* Rewritten System Prompt Primary CTA */}
-          <button
-            onClick={onOpenRewrittenPrompt}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-xs transition-colors shadow-md shadow-emerald-500/20 cursor-pointer shrink-0"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Master Prompt</span>
-            <span className="sm:hidden">Prompt</span>
-          </button>
 
           {/* Mobile Menu Toggle Button */}
           <button
@@ -344,16 +238,16 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="pt-2 border-t border-slate-800/80 flex flex-wrap gap-2 text-xs">
-            {onOpenAutonomousEngine && (
+            {onOpenBookmarks && (
               <button
                 onClick={() => {
-                  onOpenAutonomousEngine();
+                  onOpenBookmarks();
                   setIsMobileMenuOpen(false);
                 }}
-                className="px-3 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 flex items-center gap-1.5 font-semibold"
+                className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 flex items-center gap-1.5"
               >
-                <Zap className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Auto-Pilot Engine</span>
+                <Bookmark className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Reading Library {savedCount > 0 ? `(${savedCount})` : ''}</span>
               </button>
             )}
 
@@ -382,48 +276,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>RSS Feed</span>
               </button>
             )}
-
-            <button
-              onClick={() => {
-                onToggleAds();
-              }}
-              className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 flex items-center gap-1.5 font-mono"
-            >
-              {showAds ? <Eye className="w-3.5 h-3.5 text-amber-400" /> : <EyeOff className="w-3.5 h-3.5" />}
-              <span>{showAds ? 'Ads: ON' : 'Ads: OFF'}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                onOpenSEOInspector();
-                setIsMobileMenuOpen(false);
-              }}
-              className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 flex items-center gap-1.5"
-            >
-              <FileCode className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Schema SEO</span>
-            </button>
-
-            <button
-              onClick={() => {
-                onOpenCodebaseExport();
-                setIsMobileMenuOpen(false);
-              }}
-              className="px-3 py-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 flex items-center gap-1.5"
-            >
-              <FolderGit2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Astro Export</span>
-            </button>
-
-            <a
-              href="/api/download-zip"
-              download="stackpipeline-complete-project.zip"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="px-3 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 flex items-center gap-1.5 font-semibold"
-            >
-              <Download className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Download Project ZIP</span>
-            </a>
           </div>
         </div>
       )}
