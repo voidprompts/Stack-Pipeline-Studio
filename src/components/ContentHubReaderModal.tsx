@@ -2,6 +2,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { ToolComparison, ToolAlternativesHub } from '../types';
 import { getToolOfficialUrl } from '../data/saasWebsites';
 import {
+  CANONICAL_SITE_URL,
+  getCanonicalCompareUrl,
+  getCanonicalAlternativesUrl,
+} from '../data/canonicalConfig';
+import {
   X,
   ShieldCheck,
   Zap,
@@ -38,21 +43,15 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [copiedShare, setCopiedShare] = useState(false);
 
-  // Compute exact deep-link URL for sharing
+  // Compute canonical deep-link URL for sharing and social distribution
   const shareUrl = useMemo(() => {
-    if (typeof window === 'undefined') {
-      if (comparison) return `https://stackpipeline.com/?compare=${comparison.slug}`;
-      if (alternativesHub) return `https://stackpipeline.com/?alternatives=${alternativesHub.slug}`;
-      return 'https://stackpipeline.com';
-    }
-    const origin = window.location.origin;
     if (comparison) {
-      return `${origin}/?compare=${comparison.slug}`;
+      return getCanonicalCompareUrl(comparison.slug);
     }
     if (alternativesHub) {
-      return `${origin}/?alternatives=${alternativesHub.slug}`;
+      return getCanonicalAlternativesUrl(alternativesHub.slug);
     }
-    return window.location.href;
+    return CANONICAL_SITE_URL;
   }, [comparison, alternativesHub]);
 
   const handleShare = async () => {
@@ -89,9 +88,8 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
     const targetDesc = comparison ? comparison.metaDescription : alternativesHub?.metaDescription || '';
     const targetSlug = comparison ? comparison.slug : alternativesHub?.slug || '';
     const brandedTitle = `${targetTitle} | StackPipeline`;
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://stackpipeline.com';
-    const canonicalUrl = `${origin}/?${comparison ? 'compare' : 'alternatives'}=${targetSlug}`;
-    const socialImageUrl = `${origin}/og/${targetSlug}.svg`;
+    const canonicalUrl = comparison ? getCanonicalCompareUrl(targetSlug) : getCanonicalAlternativesUrl(targetSlug);
+    const socialImageUrl = `${CANONICAL_SITE_URL}/og/${targetSlug}.svg`;
 
     document.title = brandedTitle;
 

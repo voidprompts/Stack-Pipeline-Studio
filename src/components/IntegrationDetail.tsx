@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { IntegrationTutorial } from '../types';
 import { getToolOfficialUrl } from '../data/saasWebsites';
+import { CANONICAL_SITE_URL, getCanonicalArticleUrl } from '../data/canonicalConfig';
 import { AdSenseBanner } from './AdSenseBanner';
 import { ReadingProgressBar } from './ReadingProgressBar';
 import { ArticleReactions } from './ArticleReactions';
