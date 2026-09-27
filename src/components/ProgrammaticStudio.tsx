@@ -307,6 +307,7 @@ Set up a Catch Hook endpoint in ${selectedA.name} to receive change data capture
             softwareA={selectedA}
             softwareB={selectedB}
             architectureType={architecture}
+            difficulty={difficulty}
           />
         </div>
       )}

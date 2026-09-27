@@ -26,6 +26,7 @@ interface DataFlowchartProps {
   softwareA: SoftwareTool;
   softwareB: SoftwareTool;
   architectureType: string;
+  difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
 }
 
 interface FlowNode {
@@ -52,6 +53,7 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
   softwareA,
   softwareB,
   architectureType,
+  difficulty = 'Intermediate',
 }) => {
   const [selectedNodeId, setSelectedNodeId] = useState<string>('node-queue');
   const [highlightBottlenecks, setHighlightBottlenecks] = useState(true);
@@ -59,71 +61,153 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
   const [zoomLevel, setZoomLevel] = useState(1);
   const filterId = useId();
 
-  // Dynamic nodes tailored to selected Software A & Software B
+  const isBidirectional = architectureType === 'Bidirectional Sync';
+  const isBatchETL = architectureType === 'Scheduled Batch ETL';
+  const isReverseETL = architectureType === 'Reverse ETL Trigger';
+  const isWebhook = !isBidirectional && !isBatchETL && !isReverseETL;
+
+  // Dynamic nodes tailored to selected Software A & Software B, Architecture Paradigm, and Difficulty Tier
   const nodes: FlowNode[] = [
     {
       id: 'node-source',
-      title: softwareA.name,
-      subtitle: `${softwareA.category} Trigger`,
+      title: isReverseETL ? 'Data Warehouse / CDC' : softwareA.name,
+      subtitle: isReverseETL
+        ? 'Warehouse Primary'
+        : isBatchETL
+        ? `${softwareA.category} (Cron)`
+        : `${softwareA.category} Trigger`,
       category: 'source',
       x: 30,
       y: 160,
       width: 155,
       height: 95,
       icon: 'source',
-      bottleneckRisk: 'low',
-      bottleneckTitle: 'Trigger Burst & Polling Delay',
-      bottleneckDetail: softwareA.webhookSupport
+      bottleneckRisk: isBatchETL ? 'medium' : softwareA.webhookSupport ? 'low' : 'medium',
+      bottleneckTitle: isBatchETL
+        ? 'Cursor Desync & High DB Heap Pressure'
+        : isReverseETL
+        ? 'High CDC Log Extraction Latency'
+        : 'Trigger Burst & Polling Delay',
+      bottleneckDetail: isBatchETL
+        ? `Scheduled bulk scans querying changed records can cause table scan lockups or memory timeouts if cursor timestamp indexing is absent.`
+        : isReverseETL
+        ? `Continuous SQL log tailing (Debezium/CDC) can lag under write-heavy analytical warehouse bulk loads.`
+        : softwareA.webhookSupport
         ? `Instant webhook push enabled. Sudden high-volume lead or event bursts can overwhelm downstream buffers without throttling.`
         : `Polling-based trigger on entry-tier plans introduces a 5-to-15 minute sync latency delay.`,
-      remedy: 'Enable webhook subscriptions with exponential backoff on connection drops.',
-      integrationPoint: `${softwareA.name} Outbound Webhook Dispatcher`,
-      protocol: 'HTTPS POST / Webhook Event',
-      metric: `< 150ms trigger latency`,
-      samplePayload: {
-        event: 'record.created',
-        timestamp: new Date().toISOString(),
-        source_system: softwareA.slug,
-        record_id: 'evt_902148102',
-        data: {
-          email: 'lead@enterprise-corp.com',
-          company: 'Enterprise Corp',
-          annual_contract_value: 48000,
-        },
-      },
+      remedy: isBatchETL
+        ? 'Use indexed cursor pagination (e.g. `updated_at > $cursor ORDER BY id ASC LIMIT 250`) to keep batch queries non-blocking.'
+        : isReverseETL
+        ? 'Read from dedicated read-replicas with Write-Ahead-Log (WAL) tailing rather than production master.'
+        : 'Enable webhook subscriptions with exponential backoff on connection drops.',
+      integrationPoint: isReverseETL
+        ? 'Data Warehouse Change Data Capture'
+        : isBatchETL
+        ? `${softwareA.name} Bulk Cursor Reader`
+        : `${softwareA.name} Outbound Webhook Dispatcher`,
+      protocol: isBatchETL
+        ? 'Scheduled Cron / REST (Cursor GET)'
+        : isReverseETL
+        ? 'WAL / CDC Stream'
+        : 'HTTPS POST / Webhook Event',
+      metric: isBatchETL ? 'Runs every 15-60 min' : '< 150ms trigger latency',
+      samplePayload: isBatchETL
+        ? {
+            batch_id: 'batch_sched_9042',
+            cursor_timestamp: '2026-03-22T21:00:00Z',
+            chunk_size: 250,
+            source_system: softwareA.slug,
+            has_more: true,
+          }
+        : isReverseETL
+        ? {
+            warehouse_source: 'analytics_dw.customer_360',
+            cdc_operation: 'UPSERT',
+            record_id: 'cust_891024',
+            delta_fields: ['lead_score', 'churn_probability', 'mrr_tier'],
+          }
+        : {
+            event: 'record.created',
+            timestamp: new Date().toISOString(),
+            source_system: softwareA.slug,
+            record_id: 'evt_902148102',
+            data: {
+              email: 'lead@enterprise-corp.com',
+              company: 'Enterprise Corp',
+              annual_contract_value: 48000,
+            },
+          },
     },
     {
       id: 'node-gateway',
-      title: 'Ingress & Auth Gateway',
-      subtitle: 'Signature & Token Guard',
+      title:
+        difficulty === 'Beginner'
+          ? 'OAuth & Access Guard'
+          : isBatchETL
+          ? 'Token Vault & Scheduler'
+          : 'Ingress & Auth Gateway',
+      subtitle:
+        difficulty === 'Beginner'
+          ? 'No-Code Auth Vault'
+          : isBatchETL
+          ? 'Batch Token Refresh'
+          : 'Signature & Token Guard',
       category: 'security',
       x: 215,
       y: 160,
       width: 155,
       height: 95,
       icon: 'security',
-      bottleneckRisk: 'medium',
-      bottleneckTitle: 'Cryptographic Auth Overhead & Token Expiry',
+      bottleneckRisk: difficulty === 'Beginner' ? 'low' : 'medium',
+      bottleneckTitle:
+        difficulty === 'Beginner'
+          ? 'Expired OAuth 2.0 Refresh Scope'
+          : isBatchETL
+          ? 'Mid-Batch Access Token Expiry'
+          : 'Cryptographic Auth Overhead & Token Expiry',
       bottleneckDetail:
-        'HMAC SHA-256 signature verification and OAuth Bearer token refresh logic can fail under cold-start serverless spikes or expired refresh keys.',
+        difficulty === 'Beginner'
+          ? 'Cloud connector session disconnects when OAuth tokens expire without automated background refresh consent.'
+          : isBatchETL
+          ? 'Long-running batch ingestion jobs exceeding 3,600s fail halfway through when bearer tokens expire mid-stream.'
+          : 'HMAC SHA-256 signature verification and OAuth Bearer token refresh logic can fail under cold-start serverless spikes or expired refresh keys.',
       remedy:
-        'Cache validated public keys in-memory and execute automated OAuth token renewal 5 minutes prior to JWT expiry.',
-      integrationPoint: 'Edge Security Gateway (Cloudflare / API Gateway)',
-      protocol: 'HMAC-SHA256 / OAuth 2.0 Bearer',
-      metric: '99.99% signature pass rate',
+        difficulty === 'Beginner'
+          ? 'Authorize with permanent offline access refresh tokens (`access_type=offline`) in connector dashboard.'
+          : 'Automate programmatic proactive token refresh 5 minutes prior to JWT expiry with thread-safe mutex.',
+      integrationPoint:
+        difficulty === 'Beginner'
+          ? 'Cloud Managed OAuth Vault'
+          : 'Edge Security Gateway (Cloudflare / API Gateway)',
+      protocol:
+        difficulty === 'Beginner'
+          ? 'OAuth 2.0 PKCE / API Token'
+          : 'HMAC-SHA256 / OAuth 2.0 Bearer',
+      metric: difficulty === 'Beginner' ? 'Automated Token Sync' : '99.99% signature pass rate',
       samplePayload: {
         verified: true,
-        auth_mode: 'Bearer pat-na1-scoped',
+        auth_mode: difficulty === 'Beginner' ? 'OAuth 2.0 Managed Token' : 'Bearer pat-na1-scoped',
         headers: {
-          'X-Signature-SHA256': 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+          'X-Signature-SHA256':
+            difficulty === 'Beginner'
+              ? 'N/A (Managed Provider)'
+              : 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
           'X-Delivery-Attempt': 1,
         },
       },
     },
     {
       id: 'node-transform',
-      title: 'Payload Normalizer',
-      subtitle: 'Schema Mapping & Cleanse',
+      title: isBidirectional
+        ? 'Field Mapper & Diff Engine'
+        : isBatchETL
+        ? 'Bulk Array Formatter'
+        : 'Payload Normalizer',
+      subtitle: isBidirectional
+        ? 'Dual-Way Mapping'
+        : isBatchETL
+        ? 'Chunked Vector Cleanse'
+        : 'Schema Mapping & Cleanse',
       category: 'transform',
       x: 400,
       y: 160,
@@ -131,26 +215,67 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
       height: 95,
       icon: 'transform',
       bottleneckRisk: 'medium',
-      bottleneckTitle: 'Schema Drift & Unprocessable Entity (422)',
-      bottleneckDetail:
-        'Incoming fields with unexpected null values, missing required fields, or unsupported date formats trigger immediate ingestion crashes.',
-      remedy:
-        'Implement strict Zod/JSON-Schema validation with fallback default values and non-blocking dead letter routing.',
-      integrationPoint: 'Transformation Pipeline (Make/n8n/Node.js)',
-      protocol: 'JSON Schema Validation / Zod',
-      metric: '0.8ms transformation compute',
-      samplePayload: {
-        normalized: true,
-        target_schema: `${softwareB.slug}_v1`,
-        fields_mapped: 12,
-        identity_key: 'lead@enterprise-corp.com',
-        transformed_at: '2026-03-22T21:30:00Z',
-      },
+      bottleneckTitle: isBidirectional
+        ? 'Field Type Mismatch & Cyclic Recursion'
+        : isBatchETL
+        ? 'Memory Spikes on Dense JSON Arrays'
+        : 'Schema Drift & Unprocessable Entity (422)',
+      bottleneckDetail: isBidirectional
+        ? 'Mapping custom enum or multi-select fields between both platforms can cause recursive endless loop triggers without delta diffing.'
+        : isBatchETL
+        ? 'Loading large 10,000-object JSON payloads directly into Node memory triggers V8 Garbage Collection stalls.'
+        : 'Incoming fields with unexpected null values, missing required fields, or unsupported date formats trigger immediate ingestion crashes.',
+      remedy: isBidirectional
+        ? 'Compute SHA-256 field state hashes to abort execution immediately if field contents have not changed.'
+        : isBatchETL
+        ? 'Stream records via Node.js ndjson streams or pipeline chunks of 250 records to maintain constant < 120MB heap.'
+        : 'Implement strict Zod/JSON-Schema validation with fallback default values and non-blocking dead letter routing.',
+      integrationPoint:
+        difficulty === 'Beginner'
+          ? 'No-Code Visual Data Mapper'
+          : 'Transformation Pipeline (Make/n8n/Node.js)',
+      protocol:
+        difficulty === 'Beginner'
+          ? 'GUI Field Aliasing'
+          : isBatchETL
+          ? 'NDJSON Streaming Pipeline'
+          : 'JSON Schema Validation / Zod',
+      metric: isBatchETL ? '250 records / 1.2s transform' : '0.8ms transformation compute',
+      samplePayload: isBatchETL
+        ? {
+            chunk_index: 1,
+            batch_count: 250,
+            normalized_schema: `${softwareB.slug}_batch_v1`,
+            memory_heap_mb: 84.2,
+          }
+        : isBidirectional
+        ? {
+            directional_flag: 'A_TO_B',
+            diff_detected: true,
+            changed_keys: ['lead_status', 'mrr'],
+            hash_previous: 'a4f910..',
+            hash_current: 'c9012b..',
+          }
+        : {
+            normalized: true,
+            target_schema: `${softwareB.slug}_v1`,
+            fields_mapped: 12,
+            identity_key: 'lead@enterprise-corp.com',
+            transformed_at: '2026-03-22T21:30:00Z',
+          },
     },
     {
       id: 'node-queue',
-      title: 'Buffer & Deduplication',
-      subtitle: 'Idempotency Cache',
+      title: isBidirectional
+        ? 'Lock & Conflict Matrix'
+        : isBatchETL
+        ? 'Staging Heap & Cursor Lock'
+        : 'Buffer & Deduplication',
+      subtitle: isBidirectional
+        ? 'Collision Resolver'
+        : isBatchETL
+        ? 'Batch Delta Cache'
+        : 'Idempotency Cache',
       category: 'queue',
       x: 585,
       y: 160,
@@ -158,25 +283,65 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
       height: 95,
       icon: 'queue',
       bottleneckRisk: 'high',
-      bottleneckTitle: 'Thundering Herd & Duplicate Replays',
-      bottleneckDetail:
-        'High-frequency webhook retries without an Idempotency-Key cause duplicate leads, inflated contact counts, and race conditions.',
-      remedy:
-        'Store composite unique hashes (e.g., md5(email + timestamp_bucket)) in Redis with a 24-hour TTL lock before dispatching downstream.',
-      integrationPoint: 'Redis / SQS Idempotency Cache',
-      protocol: 'SETNX Lock / Leaky Bucket Rate Limiter',
-      metric: 'Zero duplicate writes guaranteed',
-      samplePayload: {
-        idempotency_key: 'idemp_e9a10c842b10',
-        cached_ttl_seconds: 86400,
-        lock_acquired: true,
-        queue_depth: 3,
-      },
+      bottleneckTitle: isBidirectional
+        ? 'Bidirectional Race Condition Collision'
+        : isBatchETL
+        ? 'Concurrent Batch Overlaps'
+        : 'Thundering Herd & Duplicate Replays',
+      bottleneckDetail: isBidirectional
+        ? 'Simultaneous edits in both systems within the same sync window trigger conflicting updates and race condition overwrite hazards.'
+        : isBatchETL
+        ? 'If a scheduled batch takes longer than the cron interval, concurrent jobs process duplicate records simultaneously.'
+        : 'High-frequency webhook retries without an Idempotency-Key cause duplicate leads, inflated contact counts, and race conditions.',
+      remedy: isBidirectional
+        ? 'Implement Last-Write-Wins (LWW) timestamp evaluation with an atomic distributed lock on the primary customer UUID.'
+        : isBatchETL
+        ? 'Acquire an exclusive Redis redlock before job execution; exit immediately if another batch instance holds the lock.'
+        : 'Store composite unique hashes (e.g., md5(email + timestamp_bucket)) in Redis with a 24-hour TTL lock before dispatching downstream.',
+      integrationPoint:
+        difficulty === 'Beginner'
+          ? 'Cloud Connector Deduplication Engine'
+          : 'Redis / SQS Idempotency Cache',
+      protocol: isBidirectional
+        ? 'Distributed Mutex Lock (Redlock)'
+        : isBatchETL
+        ? 'Cron Lock / Redis SETNX'
+        : 'SETNX Lock / Leaky Bucket Rate Limiter',
+      metric: isBidirectional
+        ? 'Deterministic Conflict Resolution'
+        : 'Zero duplicate writes guaranteed',
+      samplePayload: isBidirectional
+        ? {
+            lock_resource: `lock:lead:${softwareB.slug}:90214`,
+            conflict_strategy: 'LAST_WRITE_WINS',
+            system_a_ts: '2026-03-22T21:30:04Z',
+            system_b_ts: '2026-03-22T21:30:01Z',
+            winner: 'SYSTEM_A',
+          }
+        : isBatchETL
+        ? {
+            job_mutex_id: 'cron_batch_sync_lock',
+            status: 'LOCKED',
+            acquired_at: new Date().toISOString(),
+            ttl_seconds: 600,
+          }
+        : {
+            idempotency_key: 'idemp_e9a10c842b10',
+            cached_ttl_seconds: 86400,
+            lock_acquired: true,
+            queue_depth: 3,
+          },
     },
     {
       id: 'node-dispatcher',
-      title: 'Retry & Circuit Breaker',
-      subtitle: 'Governor Rate Throttle',
+      title: isBatchETL
+        ? 'Bulk Upsert Dispatcher'
+        : difficulty === 'Advanced'
+        ? 'Circuit Breaker & Backoff'
+        : 'Retry & Rate Throttle',
+      subtitle: isBatchETL
+        ? 'Chunked REST Ingestion'
+        : 'Governor Rate Throttle',
       category: 'dispatcher',
       x: 770,
       y: 160,
@@ -187,16 +352,20 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
       bottleneckTitle: `${softwareB.name} Rate Limit Ceiling`,
       bottleneckDetail: `Destination enforces: ${softwareB.apiRateLimit}. Exceeding this ceiling results in immediate HTTP 429 Too Many Requests and IP cooldown bans.`,
       remedy:
-        'Enforce token bucket rate limiting calibrated strictly to destination quotas, with full jitter exponential backoff ($t = 2^n \\pm \\text{rand}$).',
+        difficulty === 'Beginner'
+          ? 'Configure connector pacing delay (e.g., maximum 5 operations/sec) within the automation interface.'
+          : 'Enforce token bucket rate limiting calibrated strictly to destination quotas, with full jitter exponential backoff ($t = 2^n \\pm \\text{rand}$).',
       integrationPoint: `${softwareB.name} Rate Limiter / Circuit Breaker`,
-      protocol: 'HTTP Client with Jittered Backoff',
+      protocol: isBatchETL
+        ? 'Batch POST (Chunk Size: 100-250)'
+        : 'HTTP Client with Jittered Backoff',
       metric: `Throttled to ${softwareB.apiRateLimit}`,
       samplePayload: {
         circuit_breaker_state: 'CLOSED',
         active_quota_used: '32%',
         retry_policy: {
-          strategy: 'exponential_jitter',
-          max_retries: 3,
+          strategy: difficulty === 'Beginner' ? 'linear_pacing' : 'exponential_jitter',
+          max_retries: difficulty === 'Advanced' ? 5 : 3,
           base_delay_ms: 1000,
         },
       },
@@ -204,7 +373,9 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
     {
       id: 'node-sink',
       title: softwareB.name,
-      subtitle: `${softwareB.category} Sink`,
+      subtitle: isBidirectional
+        ? `${softwareB.category} (2-Way Node)`
+        : `${softwareB.category} Sink`,
       category: 'sink',
       x: 955,
       y: 160,
@@ -212,20 +383,37 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
       height: 95,
       icon: 'sink',
       bottleneckRisk: 'low',
-      bottleneckTitle: 'Ingestion Write Locks & Latency',
-      bottleneckDetail:
-        'Complex relational cascade triggers, workflow rules, or unindexed composite search keys in the target system can inflate response time to > 3,500ms.',
-      remedy:
-        'Use batch composite upsert endpoints (e.g. 25-50 records per HTTP request) rather than serial single-record writes.',
+      bottleneckTitle: isBatchETL
+        ? 'Batch Transaction Lock Contention'
+        : 'Ingestion Write Locks & Latency',
+      bottleneckDetail: isBatchETL
+        ? `Inserting 250 items concurrently in ${softwareB.name} can trigger table deadlocks if background workflow triggers fire on each inserted record.`
+        : 'Complex relational cascade triggers, workflow rules, or unindexed composite search keys in the target system can inflate response time to > 3,500ms.',
+      remedy: isBatchETL
+        ? 'Disable non-critical background triggers during batch ingest or chunk payloads into sub-batches of 50.'
+        : 'Use batch composite upsert endpoints (e.g. 25-50 records per HTTP request) rather than serial single-record writes.',
       integrationPoint: `${softwareB.name} REST / GraphQL API Target`,
-      protocol: 'HTTPS POST/PATCH (REST / GraphQL)',
+      protocol: isBatchETL
+        ? 'Composite Bulk Upsert API'
+        : 'HTTPS POST/PATCH (REST / GraphQL)',
       metric: '200 OK / 201 Created confirmation',
-      samplePayload: {
-        status: 200,
-        destination_id: `${softwareB.slug}_rec_99214`,
-        persisted: true,
-        roundtrip_latency_ms: 284,
-      },
+      samplePayload: isBatchETL
+        ? {
+            status: 200,
+            batch_result: {
+              processed: 250,
+              created: 182,
+              updated: 68,
+              failed: 0,
+            },
+            roundtrip_ms: 812,
+          }
+        : {
+            status: 200,
+            destination_id: `${softwareB.slug}_rec_99214`,
+            persisted: true,
+            roundtrip_latency_ms: 284,
+          },
     },
   ];
 
@@ -288,12 +476,20 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <Network className="w-5 h-5 text-emerald-400" />
-            <h3 className="text-sm font-bold text-slate-100">
-              Interactive Data Flow & Bottleneck Topology
-            </h3>
-            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-              {softwareA.name} ➔ {softwareB.name}
-            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-100">
+                Interactive Data Flow & Bottleneck Topology
+              </h3>
+              <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                {softwareA.name} ➔ {softwareB.name}
+              </span>
+              <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/25">
+                {architectureType}
+              </span>
+              <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/25">
+                {difficulty} Tier
+              </span>
+            </div>
           </div>
           <p className="text-xs text-slate-400 mt-1">
             Visual map of serialization, cryptographic verification, governor rate limits, and idempotency barriers
@@ -391,6 +587,17 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
                 <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#10b981" />
               </marker>
               <marker
+                id={`arrow-cyan-${filterId}`}
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#06b6d4" />
+              </marker>
+              <marker
                 id={`arrow-amber-${filterId}`}
                 viewBox="0 0 10 10"
                 refX="8"
@@ -425,17 +632,17 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
             {/* Pipeline Stage Lane Labels */}
             <g opacity="0.6">
               <text x="30" y="45" fill="#64748b" fontSize="10" fontFamily="monospace" fontWeight="bold">
-                INGRESS PHASE
+                {isBatchETL ? 'CRON SCHEDULER & EXTRACT' : isReverseETL ? 'WAREHOUSE CDC SOURCE' : 'INGRESS PHASE'}
               </text>
               <line x1="30" y1="55" x2="370" y2="55" stroke="#334155" strokeWidth="1" strokeDasharray="3 3" />
 
               <text x="400" y="45" fill="#64748b" fontSize="10" fontFamily="monospace" fontWeight="bold">
-                TRANSFORMATION & IDEMPOTENCY
+                {isBidirectional ? 'FIELD DIFFING & CONFLICT LOCK' : isBatchETL ? 'CHUNK STREAMING & MUTEX' : 'TRANSFORMATION & IDEMPOTENCY'}
               </text>
               <line x1="400" y1="55" x2="740" y2="55" stroke="#334155" strokeWidth="1" strokeDasharray="3 3" />
 
               <text x="770" y="45" fill="#64748b" fontSize="10" fontFamily="monospace" fontWeight="bold">
-                DISPATCH & PERSISTENCE
+                {isBatchETL ? 'BULK DISPATCH & COMPOSITE UPSERT' : 'DISPATCH & PERSISTENCE'}
               </text>
               <line x1="770" y1="55" x2="1110" y2="55" stroke="#334155" strokeWidth="1" strokeDasharray="3 3" />
             </g>
@@ -486,6 +693,23 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
               markerEnd={`url(#arrow-${filterId})`}
             />
 
+            {/* Bidirectional Loopback Arrow (Node 6 feedback into Node 4 Conflict Resolver) */}
+            {isBidirectional && (
+              <g>
+                <path
+                  d="M 1032.5 255 C 1032.5 315, 662.5 315, 662.5 255"
+                  stroke="#06b6d4"
+                  strokeWidth="2"
+                  strokeDasharray="4 4"
+                  fill="none"
+                  markerEnd={`url(#arrow-cyan-${filterId})`}
+                />
+                <text x="760" y="305" fill="#06b6d4" fontSize="9" fontFamily="monospace" fontWeight="bold">
+                  ⇄ 2-Way Delta Feedback Loop
+                </text>
+              </g>
+            )}
+
             {/* Dead Letter Queue Branch (4 to DLQ on failure) */}
             <path
               d="M 662.5 255 L 662.5 340"
@@ -496,7 +720,7 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
               markerEnd={`url(#arrow-rose-${filterId})`}
             />
             <text x="670" y="300" fill="#f43f5e" fontSize="9" fontFamily="monospace" fontWeight="bold">
-              Unrecoverable 4xx / DLQ
+              {difficulty === 'Beginner' ? 'Alert Error Log' : 'Unrecoverable 4xx / DLQ'}
             </text>
 
             {/* Retry Loop (Node 5 back to Node 4 buffer on 429 backoff) */}
@@ -509,7 +733,7 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
               markerEnd={`url(#arrow-amber-${filterId})`}
             />
             <text x="715" y="110" fill="#f59e0b" fontSize="9" fontFamily="monospace" fontWeight="bold">
-              429 Retry Backoff Loop
+              {difficulty === 'Beginner' ? 'Pacing Delay Loop' : '429 Retry Backoff Loop'}
             </text>
 
             {/* Animated Packet Stream (SVG Stroke Dash offset) */}
@@ -518,7 +742,7 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
                 <circle r="4" fill="#34d399">
                   <animateMotion
                     path="M 185 207.5 L 955 207.5"
-                    dur="3.2s"
+                    dur={isBatchETL ? '5.5s' : '3.2s'}
                     repeatCount="indefinite"
                   />
                 </circle>
@@ -529,6 +753,15 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
                     repeatCount="indefinite"
                   />
                 </circle>
+                {isBidirectional && (
+                  <circle r="3.5" fill="#06b6d4">
+                    <animateMotion
+                      path="M 1032.5 255 C 1032.5 315, 662.5 315, 662.5 255"
+                      dur="3.8s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                )}
               </>
             )}
 
