@@ -45,6 +45,96 @@ export default function App() {
   );
   const [showAds, setShowAds] = useState<boolean>(true);
 
+  // Deep-linking URL parser on initial mount & history popstate
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const parseRouteFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const articleParam = params.get('article') || params.get('tutorial') || params.get('slug');
+      const compareParam = params.get('compare');
+      const altParam = params.get('alternatives');
+      const viewParam = params.get('view');
+
+      // Check pathname (e.g. /integrations/:slug, /comparisons/:slug, /alternatives/:slug)
+      const path = window.location.pathname;
+      let pathArticleSlug = '';
+      if (path.startsWith('/integrations/')) {
+        pathArticleSlug = path.replace('/integrations/', '').replace(/\/$/, '');
+      } else if (path.startsWith('/comparisons/')) {
+        const compSlug = path.replace('/comparisons/', '').replace(/\/$/, '');
+        const found = allComparisons.find((c) => c.slug === compSlug || c.id === compSlug);
+        if (found) {
+          setSelectedComparison(found);
+          setSelectedAlternativesHub(null);
+          setIsReaderModalOpen(true);
+          return;
+        }
+      } else if (path.startsWith('/alternatives/')) {
+        const altSlug = path.replace('/alternatives/', '').replace(/\/$/, '');
+        const found = allAlternatives.find((a) => a.slug === altSlug || a.id === altSlug);
+        if (found) {
+          setSelectedAlternativesHub(found);
+          setSelectedComparison(null);
+          setIsReaderModalOpen(true);
+          return;
+        }
+      }
+
+      const targetSlug = articleParam || pathArticleSlug;
+      if (targetSlug) {
+        const foundTut = allTutorials.find((t) => t.slug === targetSlug || t.id === targetSlug);
+        if (foundTut) {
+          setSelectedTutorialId(foundTut.id);
+          setActiveView('tutorial');
+          return;
+        }
+        const foundComp = allComparisons.find((c) => c.slug === targetSlug || c.id === targetSlug);
+        if (foundComp) {
+          setSelectedComparison(foundComp);
+          setSelectedAlternativesHub(null);
+          setIsReaderModalOpen(true);
+          return;
+        }
+        const foundAlt = allAlternatives.find((a) => a.slug === targetSlug || a.id === targetSlug);
+        if (foundAlt) {
+          setSelectedAlternativesHub(foundAlt);
+          setSelectedComparison(null);
+          setIsReaderModalOpen(true);
+          return;
+        }
+      }
+
+      if (compareParam) {
+        const found = allComparisons.find((c) => c.slug === compareParam || c.id === compareParam);
+        if (found) {
+          setSelectedComparison(found);
+          setSelectedAlternativesHub(null);
+          setIsReaderModalOpen(true);
+          return;
+        }
+      }
+
+      if (altParam) {
+        const found = allAlternatives.find((a) => a.slug === altParam || a.id === altParam);
+        if (found) {
+          setSelectedAlternativesHub(found);
+          setSelectedComparison(null);
+          setIsReaderModalOpen(true);
+          return;
+        }
+      }
+
+      if (viewParam === 'matrix' || viewParam === 'studio' || viewParam === 'blog') {
+        setActiveView(viewParam);
+      }
+    };
+
+    parseRouteFromUrl();
+    window.addEventListener('popstate', parseRouteFromUrl);
+    return () => window.removeEventListener('popstate', parseRouteFromUrl);
+  }, [allTutorials, allComparisons, allAlternatives]);
+
   // Bookmarking / Reading Library State (Saved to localStorage)
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(() => {
     try {
@@ -400,13 +490,22 @@ export default function App() {
       setSelectedComparison(article.originalComparison);
       setSelectedAlternativesHub(null);
       setIsReaderModalOpen(true);
+      if (typeof window !== 'undefined') {
+        window.history.pushState(null, '', `?compare=${article.originalComparison.slug}`);
+      }
     } else if (article.archetype === 'alternatives' && article.originalAlternatives) {
       setSelectedAlternativesHub(article.originalAlternatives);
       setSelectedComparison(null);
       setIsReaderModalOpen(true);
+      if (typeof window !== 'undefined') {
+        window.history.pushState(null, '', `?alternatives=${article.originalAlternatives.slug}`);
+      }
     } else if (article.originalTutorial) {
       setSelectedTutorialId(article.originalTutorial.id);
       setActiveView('tutorial');
+      if (typeof window !== 'undefined') {
+        window.history.pushState(null, '', `?article=${article.originalTutorial.slug}`);
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -440,17 +539,31 @@ export default function App() {
       setSelectedTutorialId(found.id);
     }
     setActiveView('tutorial');
+    if (typeof window !== 'undefined' && found) {
+      window.history.pushState(null, '', `?article=${found.slug}`);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNavigateView = (view: 'blog' | 'tutorial' | 'matrix' | 'studio') => {
     setActiveView(view);
+    if (typeof window !== 'undefined') {
+      if (view === 'blog') {
+        window.history.pushState(null, '', '/');
+      } else {
+        window.history.pushState(null, '', `?view=${view}`);
+      }
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectTutorial = (id: string) => {
     setSelectedTutorialId(id);
     setActiveView('tutorial');
+    const tut = allTutorials.find((t) => t.id === id);
+    if (typeof window !== 'undefined' && tut) {
+      window.history.pushState(null, '', `?article=${tut.slug}`);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -572,7 +685,7 @@ export default function App() {
             />
 
             {/* In-Article Affiliate Cost Savings Calculator */}
-            <section className="my-16 p-6 sm:p-8 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 shadow-2xl">
+            <section className="print:hidden roi-calculator my-16 p-6 sm:p-8 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 shadow-2xl">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">

@@ -388,11 +388,13 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs text-slate-400 font-mono">
-          <span>FTC Disclosure: Content contains sponsored affiliate links (rel="sponsored noopener")</span>
+        <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs text-slate-400">
+          <span className="text-[11px] leading-relaxed">
+            FTC Disclosure: StackPipeline evaluates software independently. Outbound partner links may earn a referral commission at no additional cost to you.
+          </span>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors cursor-pointer"
+            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-colors cursor-pointer shrink-0 ml-4"
           >
             Close Guide
           </button>

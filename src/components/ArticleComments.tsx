@@ -411,7 +411,7 @@ export const ArticleComments: React.FC<ArticleCommentsProps> = ({
         POST FEEDBACK FORM
         ======================================================================
       */}
-      <div className="my-8 rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-900/90 to-slate-950 p-5 sm:p-6 shadow-xl">
+      <div className="print:hidden comments-form my-8 rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-900/90 to-slate-950 p-5 sm:p-6 shadow-xl">
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800/80">
           <div className="flex items-center gap-2 text-xs font-bold text-slate-200 uppercase font-mono">
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -578,7 +578,7 @@ export const ArticleComments: React.FC<ArticleCommentsProps> = ({
         FILTER & SORT BAR
         ======================================================================
       */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pt-2">
+      <div className="print:hidden flex flex-wrap items-center justify-between gap-3 mb-6 pt-2">
         <div className="flex items-center gap-1.5 text-xs">
           <span className="font-mono text-slate-400 text-[11px] uppercase mr-1">Filter:</span>
           {[

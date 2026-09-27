@@ -57,7 +57,8 @@
 
   /* Hide interactive, navigational, advertising, and overlay chrome */
   nav,
-  header,
+  .global-navbar,
+  header:not(.article-header),
   footer,
   aside,
   button,
@@ -65,6 +66,9 @@
   select,
   textarea,
   .no-print,
+  .interactive-lab,
+  .roi-calculator,
+  .comments-form,
   [data-print="hide"],
   [role="dialog"]:not(.print-modal),
   [role="status"],
@@ -75,12 +79,29 @@
   .animate-spin,
   .adsense-banner,
   .reaction-bar,
-  .comments-section,
   .reading-progress-bar,
   .bookmark-btn,
   .share-btn,
   .copy-btn {
     display: none !important;
+  }
+
+  /* Ensure article header is prominently printed on page 1 */
+  .article-header {
+    display: block !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-top: 0 !important;
+    margin-bottom: 16pt !important;
+    border-bottom: 2pt solid #0f172a !important;
+    padding-bottom: 12pt !important;
+  }
+
+  .article-header h1 {
+    font-size: 22pt !important;
+    line-height: 1.25 !important;
+    color: #0f172a !important;
+    margin-bottom: 8pt !important;
   }
 
   /* Ensure main content takes full page width */
@@ -210,13 +231,27 @@
   }
 
   /* Step-by-step implementation guide cards */
-  article,
   .tutorial-step,
   .comparison-card,
   .faq-item {
     page-break-inside: avoid;
     break-inside: avoid;
     margin-bottom: 12pt !important;
+  }
+
+  /* Force high contrast text on all printable cards */
+  div[class*="bg-slate-"],
+  section[class*="bg-slate-"] {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  div[class*="bg-slate-"] p,
+  div[class*="bg-slate-"] span,
+  section[class*="bg-slate-"] p,
+  section[class*="bg-slate-"] span {
+    color: #334155 !important;
   }
 
   /* Show hyperlinks with URL destination in print */

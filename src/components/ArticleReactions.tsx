@@ -94,7 +94,7 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 py-4 my-6 border-y border-slate-800/80 bg-slate-900/30 px-4 rounded-xl">
+    <div className="print:hidden reaction-bar flex flex-wrap items-center justify-between gap-3 py-4 my-6 border-y border-slate-800/80 bg-slate-900/30 px-4 rounded-xl">
       <div className="flex items-center gap-2 text-xs">
         <span className="text-slate-400 font-mono uppercase text-[11px] mr-1">Feedback:</span>
 

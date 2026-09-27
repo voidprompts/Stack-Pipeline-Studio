@@ -64,6 +64,14 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
   const [showFaqSchemaPreview, setShowFaqSchemaPreview] = useState(false);
   const [copiedFaqSchema, setCopiedFaqSchema] = useState(false);
 
+  // Construct absolute deep-link URL for sharing and social distribution
+  const shareUrl = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}/?article=${tutorial.slug}`;
+    }
+    return `https://stackpipeline.com/integrations/${tutorial.slug}`;
+  }, [tutorial.slug]);
+
   // Safe fallback for author and technicalReviewer to guarantee zero undefined crashes
   const author = tutorial.author || {
     name: 'StackPipeline Editorial Team',
@@ -397,7 +405,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
       <ReadingProgressBar />
 
       {/* Semantic Breadcrumb Navigation & Reading Controls */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 text-xs print:hidden">
         <nav aria-label="Breadcrumbs" className="text-slate-400 font-medium">
           <ol className="flex items-center gap-2">
             <li>
@@ -464,7 +472,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
       <AdSenseBanner placement="header_leaderboard" slotId="9182301923" showAds={showAds} />
 
       {/* Primary Article Header */}
-      <header className="my-6 pb-6 border-b border-slate-800/80">
+      <header className="article-header my-6 pb-6 border-b border-slate-800/80">
         <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-slate-400 mb-3">
           <span className="text-emerald-400 font-bold uppercase tracking-wider">
             {tutorial.architectureType}
@@ -556,13 +564,15 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
         </div>
 
         {/* Reader Feedback & Reactions Toolbar */}
-        <ArticleReactions
-          articleId={tutorial.id}
-          title={tutorial.title}
-          url={window.location.href}
-          isBookmarked={isBookmarked}
-          onToggleBookmark={onToggleBookmark}
-        />
+        <div className="print:hidden">
+          <ArticleReactions
+            articleId={tutorial.id}
+            title={tutorial.title}
+            url={shareUrl}
+            isBookmarked={isBookmarked}
+            onToggleBookmark={onToggleBookmark}
+          />
+        </div>
       </header>
 
       {/* Content Layout with Sidebars */}
@@ -763,7 +773,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
           {/* Interactive Failure & Retry Simulator Callout Banner */}
           {onNavigateToTesting && (
-            <div className="p-5 rounded-xl bg-gradient-to-r from-amber-950/30 via-slate-900 to-slate-950 border border-amber-800/40 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="print:hidden p-5 rounded-xl bg-gradient-to-r from-amber-950/30 via-slate-900 to-slate-950 border border-amber-800/40 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
                   <Zap className="w-4 h-4" />
