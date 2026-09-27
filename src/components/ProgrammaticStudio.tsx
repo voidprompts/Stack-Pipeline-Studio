@@ -8,13 +8,11 @@ import { DataFlowchart } from './DataFlowchart';
 interface ProgrammaticStudioProps {
   tools?: SoftwareTool[];
   onLoadTutorialIntoView: (slug: string) => void;
-  onOpenEvaluationModal?: () => void;
 }
 
 export const ProgrammaticStudio: React.FC<ProgrammaticStudioProps> = ({
   tools = SAAS_TOOLS,
   onLoadTutorialIntoView,
-  onOpenEvaluationModal,
 }) => {
   const [toolA, setToolA] = useState(tools[0]?.id || 'zapier');
   const [toolB, setToolB] = useState(tools[1]?.id || 'hubspot');
@@ -151,16 +149,6 @@ Set up a Catch Hook endpoint in ${selectedA.name} to receive change data capture
         </div>
 
         <div className="flex items-center gap-2">
-          {onOpenEvaluationModal && (
-            <button
-              onClick={onOpenEvaluationModal}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold rounded-lg text-xs transition-all shadow-md shadow-emerald-500/20"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Auto-Evaluate Any Platform</span>
-            </button>
-          )}
-
           <button
             onClick={() => onLoadTutorialIntoView('connect-zapier-to-hubspot')}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition-colors"

@@ -7,12 +7,10 @@ import { Search, ExternalLink, ChevronDown, ChevronUp, Star, Zap, Check, X } fro
 interface SaaSComparisonMatrixProps {
   tools?: SoftwareTool[];
   onSelectSoftware?: (tool: SoftwareTool) => void;
-  onOpenEvaluationModal?: () => void;
 }
 
 export const SaaSComparisonMatrix: React.FC<SaaSComparisonMatrixProps> = ({
   tools = SAAS_TOOLS,
-  onOpenEvaluationModal,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -91,16 +89,6 @@ export const SaaSComparisonMatrix: React.FC<SaaSComparisonMatrixProps> = ({
               <option value="name">Alphabetical</option>
             </select>
           </div>
-
-          {onOpenEvaluationModal && (
-            <button
-              onClick={onOpenEvaluationModal}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 hover:bg-emerald-500/25 text-emerald-300 text-xs font-bold transition-all shadow-sm"
-            >
-              <Zap className="w-3.5 h-3.5 text-emerald-400" />
-              <span>+ Auto-Evaluate Any Platform</span>
-            </button>
-          )}
         </div>
       </div>
 

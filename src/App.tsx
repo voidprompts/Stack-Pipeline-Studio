@@ -698,7 +698,6 @@ export default function App() {
           <div className="mt-6">
             <SaaSComparisonMatrix
               tools={allTools}
-              onOpenEvaluationModal={() => setIsEvaluationModalOpen(true)}
             />
           </div>
         )}
@@ -708,7 +707,6 @@ export default function App() {
             <ProgrammaticStudio
               tools={allTools}
               onLoadTutorialIntoView={handleLoadTutorialFromStudio}
-              onOpenEvaluationModal={() => setIsEvaluationModalOpen(true)}
             />
           </div>
         )}
