@@ -26,6 +26,10 @@ const intercom = getTool('intercom');
 const fivetran = getTool('fivetran');
 const notion = getTool('notion');
 const postgres = getTool('postgres');
+const linear = getTool('linear');
+const slack = getTool('slack');
+const supabase = getTool('supabase');
+const retool = getTool('retool');
 
 export const INTEGRATION_TUTORIALS: IntegrationTutorial[] = [
   // 1. Zapier to HubSpot
@@ -1439,6 +1443,244 @@ QUALIFY ROW_NUMBER() OVER (
         question: 'What happens if a new tracking property is added to an existing track call?',
         answer: 'Segment automatically detects new schema properties and alters the BigQuery destination table by appending the new column without breaking data collection.',
       },
+    ],
+  },
+
+  // 9. Linear to Slack (High-Throughput Engineering Triage)
+  {
+    id: 'connect-linear-to-slack',
+    slug: 'connect-linear-to-slack',
+    title: 'How to Connect Linear to Slack: High-Throughput Automated Architecture',
+    h1: 'How to Connect Linear to Slack: Real-Time Incident & Issue Dispatch',
+    metaDescription: 'Step-by-step enterprise guide connecting Linear to Slack. Configure HMAC webhook authentication, Block Kit message cards, and instant engineer routing.',
+    softwareA: linear,
+    softwareB: slack,
+    difficulty: 'Intermediate',
+    estimatedMinutes: 9,
+    author: AUTHORS.alexVance,
+    technicalReviewer: AUTHORS.elenaRostova,
+    publishDate: '2026-03-22',
+    updatedDate: '2026-09-24',
+    schemaType: 'HowTo',
+    editorChoiceNote: 'Recommended Architecture: Use Linear Webhook signatures (linear-signature header) and route urgent priority issues into dedicated Slack incident channels using Slack Block Kit.',
+    shortcutBlueprintName: 'linear_slack_triage_v1.json',
+    architectureType: 'Event-Driven Webhook',
+    comparisonMetrics: [
+      { parameter: 'Notification Speed', nativeConnector: '2-5 seconds', middlewareConnector: '< 500ms', directApiWebhook: '< 150ms', winner: 'direct' },
+      { parameter: 'Filter Granularity', nativeConnector: 'Team-level only', middlewareConnector: 'Priority & Label filtered', directApiWebhook: 'Full JSON logic', winner: 'direct' },
+      { parameter: 'Rich Interactive Cards', nativeConnector: 'Basic text snippet', middlewareConnector: 'Custom Block Kit layout', directApiWebhook: 'Full Block Kit buttons', winner: 'direct' },
+      { parameter: 'Rate Limit Ceiling', nativeConnector: 'Slack 1 msg/sec/channel', middlewareConnector: 'Buffered queue batching', directApiWebhook: 'Exponential retry', winner: 'middleware' },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        title: 'Generate Linear Webhook Subscription with Signing Secret',
+        anchorId: 'step-1-linear-webhook',
+        summary: 'Register a webhook in Linear settings for Issue and Comment events, saving the secret token for payload verification.',
+        detailedInstructions: [
+          'Navigate to Linear Settings -> API -> Webhooks.',
+          'Click New Webhook and select Issue created, Issue updated, and Comment created events.',
+          'Provide your secure ingestion HTTPS endpoint URL.',
+          'Copy the Webhook Secret key to verify HMAC-SHA256 signatures.',
+        ],
+        codeSnippets: [
+          {
+            language: 'typescript',
+            label: 'HMAC-SHA256 Signature Verification',
+            code: `import crypto from 'crypto';
+
+export function verifyLinearWebhook(rawBody: string, signature: string, secret: string): boolean {
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(rawBody, 'utf8');
+  const digest = hmac.digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
+}`,
+          },
+        ],
+      },
+      {
+        stepNumber: 2,
+        title: 'Transform Linear Payload into Slack Block Kit Format',
+        anchorId: 'step-2-block-kit',
+        summary: 'Format issue metadata (title, urgency, team, assignee) into an interactive Slack message card.',
+        detailedInstructions: [
+          'Filter out low-priority updates to prevent channel notification fatigue.',
+          'Construct Slack Block Kit header, section fields, and action buttons linking directly to the Linear issue.',
+          'Post the formatted JSON payload to the Slack Incoming Webhook URL.',
+        ],
+        codeSnippets: [
+          {
+            language: 'json',
+            label: 'Slack Block Kit Payload',
+            code: `{
+  "blocks": [
+    {
+      "type": "header",
+      "text": { "type": "plain_text", "text": "🚨 Urgent Issue: LIN-4820", "emoji": true }
+    },
+    {
+      "type": "section",
+      "fields": [
+        { "type": "mrkdwn", "text": "*Title:* API Rate Limiter Burst Bug" },
+        { "type": "mrkdwn", "text": "*Priority:* Urgent (P1)" },
+        { "type": "mrkdwn", "text": "*Assignee:* @elena" },
+        { "type": "mrkdwn", "text": "*Team:* Infrastructure Core" }
+      ]
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": { "type": "plain_text", "text": "Open in Linear" },
+          "style": "primary",
+          "url": "https://linear.app/team/issue/LIN-4820"
+        }
+      ]
+    }
+  ]
+}`,
+          },
+        ],
+      },
+    ],
+    faq: [
+      { question: 'Does Slack rate limit incoming webhooks from Linear?', answer: 'Yes. Slack enforces a rate limit of approximately 1 message per second per channel. For high-volume engineering teams, buffer events in a queue like Redis or SQS.' },
+      { question: 'Can engineers update Linear issue status directly from Slack?', answer: 'Yes, by creating a Slack Interactive App and subscribing to Block Kit action buttons, you can trigger GraphQL mutations in Linear via their API.' },
+    ],
+  },
+
+  // 10. Supabase to BigQuery (CDC Data Warehouse Sync)
+  {
+    id: 'connect-supabase-to-bigquery',
+    slug: 'connect-supabase-to-bigquery',
+    title: 'How to Connect Supabase to BigQuery: Real-Time CDC & Analytics Pipeline',
+    h1: 'How to Stream Supabase Postgres into Google BigQuery in Real Time',
+    metaDescription: 'Step-by-step enterprise architecture guide streaming Supabase Postgres changes into Google BigQuery using logical replication and change data capture (CDC).',
+    softwareA: supabase,
+    softwareB: bigquery,
+    difficulty: 'Advanced',
+    estimatedMinutes: 12,
+    author: AUTHORS.marcusChen,
+    technicalReviewer: AUTHORS.elenaRostova,
+    publishDate: '2026-03-24',
+    updatedDate: '2026-09-25',
+    schemaType: 'HowTo',
+    editorChoiceNote: 'Recommended Architecture: Use Postgres WAL logical decoding (pgoutput) streaming to Google Cloud Pub/Sub and BigQuery Storage Write API for sub-second analytical latency.',
+    shortcutBlueprintName: 'supabase_bigquery_cdc_pipeline.json',
+    architectureType: 'Scheduled Batch ETL',
+    comparisonMetrics: [
+      { parameter: 'Sync Latency', nativeConnector: 'Hourly batch', middlewareConnector: '5-15 minutes', directApiWebhook: '< 1 second (CDC)', winner: 'direct' },
+      { parameter: 'OLTP Database Impact', nativeConnector: 'Heavy SELECT scans', middlewareConnector: 'Incremental timestamp queries', directApiWebhook: 'Zero table scan (WAL stream)', winner: 'direct' },
+      { parameter: 'Schema Evolution', nativeConnector: 'Manual table update', middlewareConnector: 'Semi-automated', directApiWebhook: 'Automatic BigQuery schema update', winner: 'direct' },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        title: 'Enable Logical Replication in Supabase Postgres',
+        anchorId: 'step-1-supabase-wal',
+        summary: 'Configure Supabase Postgres WAL level to logical and create a dedicated replication publication.',
+        detailedInstructions: [
+          'Ensure your Supabase project is on a tier supporting logical replication (Pro or Enterprise).',
+          'Execute CREATE PUBLICATION bigquery_sync FOR ALL TABLES in the Supabase SQL editor.',
+          'Generate secure database credentials dedicated exclusively to replication streaming.',
+        ],
+        codeSnippets: [
+          {
+            language: 'sql',
+            label: 'Enable Supabase Publication',
+            code: `-- Enable logical replication publication
+CREATE PUBLICATION bigquery_cdc_pub FOR TABLE 
+  public.users, 
+  public.subscriptions, 
+  public.transactions;`,
+          },
+        ],
+      },
+      {
+        stepNumber: 2,
+        title: 'Stream CDC Events to BigQuery with Storage Write API',
+        anchorId: 'step-2-bigquery-write',
+        summary: 'Write append-only CDC changelogs into partitioned BigQuery tables with exactly-once stream semantics.',
+        detailedInstructions: [
+          'Create a partitioned table in BigQuery with _record_timestamp and _change_type (INSERT/UPDATE/DELETE).',
+          'Deploy an ingestion worker (Cloud Run or Kafka Connect) connecting to Supabase via Postgres protocol.',
+          'Stream changes via BigQuery Storage Write API in COMMITTED mode.',
+        ],
+        codeSnippets: [
+          {
+            language: 'sql',
+            label: 'BigQuery Partitioned Target Schema',
+            code: `CREATE TABLE \`analytics-prod.supabase_cdc.transactions_raw\` (
+  id STRING,
+  user_id STRING,
+  amount_cents INT64,
+  currency STRING,
+  status STRING,
+  _cdc_operation STRING,
+  _cdc_timestamp TIMESTAMP
+)
+PARTITION BY DATE(_cdc_timestamp)
+CLUSTER BY user_id, status;`,
+          },
+        ],
+      },
+    ],
+    faq: [
+      { question: 'Does streaming CDC slow down production Postgres performance?', answer: 'No. Logical replication reads directly from the Write-Ahead Log (WAL) on disk, avoiding table-locking SELECT queries on your production database.' },
+    ],
+  },
+
+  // 11. Retool to Postgres
+  {
+    id: 'connect-retool-to-postgres',
+    slug: 'connect-retool-to-postgres',
+    title: 'How to Connect Retool to Postgres: Enterprise RBAC & Admin Portal',
+    h1: 'How to Connect Retool to PostgreSQL: Secure Internal Tooling Guide',
+    metaDescription: 'Complete tutorial on connecting Retool to PostgreSQL. Configure SSL certificates, read-only replica roles, parameterized SQL queries, and audit logging.',
+    softwareA: retool,
+    softwareB: postgres,
+    difficulty: 'Intermediate',
+    estimatedMinutes: 8,
+    author: AUTHORS.alexVance,
+    technicalReviewer: AUTHORS.marcusChen,
+    publishDate: '2026-03-25',
+    updatedDate: '2026-09-25',
+    schemaType: 'HowTo',
+    editorChoiceNote: 'Recommended Architecture: Connect Retool to an isolated Read Replica with restricted schemas, using prepared statements to prevent SQL injection vulnerabilities.',
+    shortcutBlueprintName: 'retool_postgres_admin_template.json',
+    architectureType: 'Bidirectional Sync',
+    comparisonMetrics: [
+      { parameter: 'Query Performance', nativeConnector: 'Native TCP pool (< 50ms)', middlewareConnector: 'REST wrapper (150-300ms)', directApiWebhook: 'Custom API', winner: 'native' },
+      { parameter: 'SQL Injection Safety', nativeConnector: 'Parameterized Prepared Statements', middlewareConnector: 'JSON field sanitization', directApiWebhook: 'ORM validation', winner: 'native' },
+      { parameter: 'Audit Logging', nativeConnector: 'Retool Enterprise Audit Logs', middlewareConnector: 'Custom access logs', directApiWebhook: 'Server logs', winner: 'native' },
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        title: 'Provision a Dedicated Retool Database Role in PostgreSQL',
+        anchorId: 'step-1-postgres-role',
+        summary: 'Create a least-privilege PostgreSQL role with specific table grants and connection limits.',
+        detailedInstructions: [
+          'Connect to your PostgreSQL database as superuser (postgres).',
+          'Create a dedicated role: CREATE ROLE retool_operator WITH LOGIN PASSWORD \'...\';',
+          'Grant SELECT permissions only on production business tables.',
+        ],
+        codeSnippets: [
+          {
+            language: 'sql',
+            label: 'PostgreSQL Least-Privilege Role',
+            code: `CREATE ROLE retool_user WITH LOGIN PASSWORD 'secure_entropy_key_2026!';
+GRANT CONNECT ON DATABASE production_db TO retool_user;
+GRANT USAGE ON SCHEMA public TO retool_user;
+GRANT SELECT, UPDATE(status, tier) ON TABLE public.accounts TO retool_user;
+ALTER ROLE retool_user CONNECTION LIMIT 10;`,
+          },
+        ],
+      },
+    ],
+    faq: [
+      { question: 'Does Retool support connecting to private Postgres databases behind a VPC?', answer: 'Yes. Retool provides Self-Hosted deployments and outbound IP address whitelisting, as well as an SSH bastion tunnel connector for private VPC databases.' },
     ],
   },
 ];

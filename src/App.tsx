@@ -20,6 +20,8 @@ import { BookmarksDrawer } from './components/BookmarksDrawer';
 import { RSSFeedModal } from './components/RSSFeedModal';
 import { NewsletterModal } from './components/NewsletterModal';
 import { SoftwareTool, IntegrationTutorial, Author, ToolComparison, ToolAlternativesHub, UnifiedArticle } from './types';
+import { COMPARISONS_DATA } from './data/comparisonsData';
+import { ALTERNATIVES_DATA } from './data/alternativesData';
 import { getToolOfficialUrl } from './data/saasWebsites';
 import { Calculator, Sparkles, FolderGit2, ShieldCheck, ArrowRight, Zap, Check } from 'lucide-react';
 
@@ -36,8 +38,8 @@ export default function App() {
   const [activeView, setActiveView] = useState<'blog' | 'tutorial' | 'matrix' | 'studio'>('blog');
   const [allTools, setAllTools] = useState<SoftwareTool[]>(SAAS_TOOLS);
   const [allTutorials, setAllTutorials] = useState<IntegrationTutorial[]>(INTEGRATION_TUTORIALS);
-  const [allComparisons, setAllComparisons] = useState<ToolComparison[]>([]);
-  const [allAlternatives, setAllAlternatives] = useState<ToolAlternativesHub[]>([]);
+  const [allComparisons, setAllComparisons] = useState<ToolComparison[]>(COMPARISONS_DATA);
+  const [allAlternatives, setAllAlternatives] = useState<ToolAlternativesHub[]>(ALTERNATIVES_DATA);
   const [selectedTutorialId, setSelectedTutorialId] = useState<string>(
     INTEGRATION_TUTORIALS[0].id
   );
