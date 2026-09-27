@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { IntegrationTutorial } from '../types';
+import { getToolOfficialUrl } from '../data/saasWebsites';
 import { AdSenseBanner } from './AdSenseBanner';
 import { ReadingProgressBar } from './ReadingProgressBar';
 import { ArticleReactions } from './ArticleReactions';
@@ -850,12 +851,12 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
                   </p>
                 </div>
                 <a
-                  href={tutorial.softwareA.affiliateUrl}
+                  href={tutorial.softwareA.websiteUrl || getToolOfficialUrl(tutorial.softwareA.slug || tutorial.softwareA.name)}
                   target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-md"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
                 >
-                  Visit {tutorial.softwareA.name} (Free Trial)
+                  Visit {tutorial.softwareA.name} (Official Website)
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
@@ -872,12 +873,12 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
                   </p>
                 </div>
                 <a
-                  href={tutorial.softwareB.affiliateUrl}
+                  href={tutorial.softwareB.websiteUrl || getToolOfficialUrl(tutorial.softwareB.slug || tutorial.softwareB.name)}
                   target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  Visit {tutorial.softwareB.name} (Official Portal)
+                  Visit {tutorial.softwareB.name} (Official Website)
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>

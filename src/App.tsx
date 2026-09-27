@@ -20,9 +20,19 @@ import { BookmarksDrawer } from './components/BookmarksDrawer';
 import { RSSFeedModal } from './components/RSSFeedModal';
 import { NewsletterModal } from './components/NewsletterModal';
 import { SoftwareTool, IntegrationTutorial, Author, ToolComparison, ToolAlternativesHub, UnifiedArticle } from './types';
+import { getToolOfficialUrl } from './data/saasWebsites';
 import { Calculator, Sparkles, FolderGit2, ShieldCheck, ArrowRight, Zap, Check } from 'lucide-react';
 
 export default function App() {
+  // Automatic /go/:slug outbound URL resolver to prevent 404s
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/go/')) {
+      const slug = window.location.pathname.replace(/^\/go\/?/, '').split('/')[0];
+      const target = getToolOfficialUrl(slug);
+      window.location.replace(target);
+    }
+  }, []);
+
   const [activeView, setActiveView] = useState<'blog' | 'tutorial' | 'matrix' | 'studio'>('blog');
   const [allTools, setAllTools] = useState<SoftwareTool[]>(SAAS_TOOLS);
   const [allTutorials, setAllTutorials] = useState<IntegrationTutorial[]>(INTEGRATION_TUTORIALS);
@@ -172,7 +182,8 @@ export default function App() {
                 webhookSupport: true,
                 apiRateLimit: '120 req/min',
                 nativeIntegrationsCount: 380,
-                affiliateUrl: `https://stackpipeline.com/go/${pick.name.toLowerCase()}?ref=stackpipeline`,
+                affiliateUrl: getToolOfficialUrl(pick.name),
+                websiteUrl: getToolOfficialUrl(pick.name),
                 affiliatePartnerId: `SP-${pick.name.toUpperCase().slice(0, 4)}-9901`,
                 pros: ['Real-time webhook events', 'Granular OAuth token scoping', 'Exponential retry support'],
                 cons: ['Burst quotas on high concurrency', 'Cursor-based pagination required'],
@@ -194,7 +205,8 @@ export default function App() {
                 webhookSupport: true,
                 apiRateLimit: '100 req/min',
                 nativeIntegrationsCount: 520,
-                affiliateUrl: `https://stackpipeline.com/go/${pick.partner.toLowerCase()}?ref=stackpipeline`,
+                affiliateUrl: getToolOfficialUrl(pick.partner),
+                websiteUrl: getToolOfficialUrl(pick.partner),
                 affiliatePartnerId: `SP-${pick.partner.toUpperCase().slice(0, 4)}-9901`,
                 pros: ['Reliable REST endpoints', 'Deep field mapping', 'Audit logs'],
                 cons: ['Governor rate limit triggers'],
@@ -667,12 +679,12 @@ export default function App() {
                   Based on automating {currentTutorial.softwareA.name} to {currentTutorial.softwareB.name} with instant trigger hooks.
                 </p>
                 <a
-                  href={currentTutorial.softwareA.affiliateUrl}
+                  href={currentTutorial.softwareA.websiteUrl || getToolOfficialUrl(currentTutorial.softwareA.slug || currentTutorial.softwareA.name)}
                   target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition-colors flex items-center gap-1.5 shadow-lg shadow-emerald-500/20"
+                  rel="noopener noreferrer"
+                  className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition-colors flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 cursor-pointer"
                 >
-                  Start Automating with {currentTutorial.softwareA.name} Free
+                  Visit Official {currentTutorial.softwareA.name} Website
                   <ArrowRight className="w-4 h-4" />
                 </a>
               </div>

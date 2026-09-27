@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SoftwareTool, IntegrationTutorial } from '../types';
 import { SAAS_TOOLS, AUTHORS } from '../data/saasTools';
+import { getToolOfficialUrl } from '../data/saasWebsites';
 import {
   Sparkles,
   Search,
@@ -111,7 +112,8 @@ export const PlatformEvaluationModal: React.FC<PlatformEvaluationModalProps> = (
         webhookSupport: true,
         apiRateLimit: '120 req/minute',
         nativeIntegrationsCount: 180,
-        affiliateUrl: `https://stackpipeline.com/go/${slug}?ref=stackpipeline`,
+        affiliateUrl: getToolOfficialUrl(slug),
+        websiteUrl: getToolOfficialUrl(slug),
         affiliatePartnerId: `SP-${slug.slice(0, 4).toUpperCase()}-9021`,
         pros: [
           'REST API v2 with scoped OAuth2 credentials',

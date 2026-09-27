@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { SAAS_TOOLS } from '../data/saasTools';
 import { SoftwareTool } from '../types';
+import { getToolOfficialUrl } from '../data/saasWebsites';
 import { Search, ExternalLink, ChevronDown, ChevronUp, Star, Zap, Check, X } from 'lucide-react';
 
 interface SaaSComparisonMatrixProps {
@@ -193,12 +194,12 @@ export const SaaSComparisonMatrix: React.FC<SaaSComparisonMatrixProps> = ({
                     </td>
                     <td className="py-4 px-4 text-right">
                       <a
-                        href={tool.affiliateUrl}
+                        href={tool.websiteUrl || getToolOfficialUrl(tool.slug || tool.name)}
                         target="_blank"
-                        rel="noopener noreferrer sponsored"
+                        rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-xs transition-colors shadow-sm"
-                        title="Sponsored Link · StackPipeline Affiliate Partner"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-xs transition-colors shadow-sm cursor-pointer"
+                        title={`Visit official ${tool.name} website`}
                       >
                         Visit Site
                         <ExternalLink className="w-3 h-3" />

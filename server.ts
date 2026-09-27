@@ -31,6 +31,70 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+// Authoritative mapping of official SaaS websites
+const SAAS_OFFICIAL_WEBSITES: Record<string, string> = {
+  linear: 'https://linear.app',
+  zapier: 'https://zapier.com',
+  hubspot: 'https://www.hubspot.com',
+  make: 'https://www.make.com',
+  salesforce: 'https://www.salesforce.com',
+  clay: 'https://www.clay.com',
+  apollo: 'https://www.apollo.io',
+  snowflake: 'https://www.snowflake.com',
+  airtable: 'https://airtable.com',
+  stripe: 'https://stripe.com',
+  n8n: 'https://n8n.io',
+  workato: 'https://www.workato.com',
+  segment: 'https://segment.com',
+  bigquery: 'https://cloud.google.com/bigquery',
+  postgres: 'https://www.postgresql.org',
+  postgresql: 'https://www.postgresql.org',
+  zendesk: 'https://www.zendesk.com',
+  slack: 'https://slack.com',
+  intercom: 'https://www.intercom.com',
+  fivetran: 'https://www.fivetran.com',
+  notion: 'https://www.notion.so',
+  pipedrive: 'https://www.pipedrive.com',
+  clickup: 'https://clickup.com',
+  asana: 'https://asana.com',
+  jira: 'https://www.atlassian.com/software/jira',
+  datadog: 'https://www.datadoghq.com',
+  mixpanel: 'https://mixpanel.com',
+  amplitude: 'https://amplitude.com',
+  supabase: 'https://supabase.com',
+  census: 'https://www.getcensus.com',
+  hightouch: 'https://hightouch.com',
+  airbyte: 'https://airbyte.com',
+  retool: 'https://retool.com',
+  chargebee: 'https://www.chargebee.com',
+  rudderstack: 'https://www.rudderstack.com',
+  pagerduty: 'https://www.pagerduty.com',
+  postman: 'https://www.postman.com',
+  activecampaign: 'https://www.activecampaign.com',
+  close: 'https://www.close.com',
+  appsmith: 'https://www.appsmith.com',
+  webflow: 'https://webflow.com',
+  klaviyo: 'https://www.klaviyo.com',
+  gong: 'https://www.gong.io',
+};
+
+function getToolOfficialUrl(slugOrName: string): string {
+  if (!slugOrName) return 'https://linear.app';
+  const clean = slugOrName.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+  if (SAAS_OFFICIAL_WEBSITES[clean]) return SAAS_OFFICIAL_WEBSITES[clean];
+  for (const [k, v] of Object.entries(SAAS_OFFICIAL_WEBSITES)) {
+    if (clean.includes(k) || k.includes(clean)) return v;
+  }
+  return `https://${clean}.com`;
+}
+
+// Direct 302 outbound redirect route for /go/:slug or /redirect/:slug
+app.get(['/go/:slug', '/redirect/:slug'], (req, res) => {
+  const { slug } = req.params;
+  const target = getToolOfficialUrl(slug);
+  return res.redirect(302, target);
+});
+
 // Global author definitions
 const EDITORIAL_AUTHOR = {
   name: 'StackPipeline Editorial Team',
@@ -113,7 +177,8 @@ function buildSoftwareTool(name: string, categoryOverride?: string) {
     webhookSupport: true,
     apiRateLimit: '120 req/min with burst throttle',
     nativeIntegrationsCount: 420,
-    affiliateUrl: `https://stackpipeline.com/go/${slug}?ref=stackpipeline&utm_source=b2b_saas`,
+    affiliateUrl: getToolOfficialUrl(slug),
+    websiteUrl: getToolOfficialUrl(slug),
     affiliatePartnerId: `SP-${slug.slice(0, 4).toUpperCase()}-9901`,
     pros: [
       'Native webhook event streaming with HMAC-SHA256 signature verification',
@@ -1087,7 +1152,8 @@ Return ONLY valid raw JSON with no Markdown backticks or commentary.`;
           webhookSupport: Boolean(parsed.webhookSupport ?? true),
           apiRateLimit: parsed.apiRateLimit || '100 req/min',
           nativeIntegrationsCount: Number(parsed.nativeIntegrationsCount) || 200,
-          affiliateUrl: `https://stackpipeline.com/go/${slug}?ref=stackpipeline&utm_source=b2b_saas`,
+          affiliateUrl: getToolOfficialUrl(slug),
+          websiteUrl: getToolOfficialUrl(slug),
           affiliatePartnerId: `SP-${slug.slice(0, 4).toUpperCase()}-7712`,
           pros: Array.isArray(parsed.pros) ? parsed.pros : ['API flexibility', 'Webhook support'],
           cons: Array.isArray(parsed.cons) ? parsed.cons : ['Rate limits apply'],

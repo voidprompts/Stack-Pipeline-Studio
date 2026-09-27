@@ -29,6 +29,7 @@ export interface SoftwareTool {
   apiRateLimit: string;
   nativeIntegrationsCount: number;
   affiliateUrl: string;
+  websiteUrl?: string;
   affiliatePartnerId: string;
   pros: string[];
   cons: string[];

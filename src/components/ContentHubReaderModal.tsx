@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ToolComparison, ToolAlternativesHub } from '../types';
+import { getToolOfficialUrl } from '../data/saasWebsites';
 import {
   X,
   ShieldCheck,
@@ -169,12 +170,12 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
                     ))}
                   </div>
                   <a
-                    href={comparison.toolA.affiliateUrl}
+                    href={comparison.toolA.websiteUrl || getToolOfficialUrl(comparison.toolA.slug || comparison.toolA.name)}
                     target="_blank"
-                    rel="sponsored noopener noreferrer"
-                    className="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow"
+                    rel="noopener noreferrer"
+                    className="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow cursor-pointer"
                   >
-                    Visit {comparison.toolA.name} (Free Trial)
+                    Visit {comparison.toolA.name} (Official Website)
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -195,12 +196,12 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
                     ))}
                   </div>
                   <a
-                    href={comparison.toolB.affiliateUrl}
+                    href={comparison.toolB.websiteUrl || getToolOfficialUrl(comparison.toolB.slug || comparison.toolB.name)}
                     target="_blank"
-                    rel="sponsored noopener noreferrer"
-                    className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5"
+                    rel="noopener noreferrer"
+                    className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    Visit {comparison.toolB.name}
+                    Visit {comparison.toolB.name} (Official Website)
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -330,10 +331,10 @@ export const ContentHubReaderModal: React.FC<ContentHubReaderModalProps> = ({
 
                       <div className="shrink-0 flex items-center gap-2">
                         <a
-                          href={alt.tool.affiliateUrl}
+                          href={alt.tool.websiteUrl || getToolOfficialUrl(alt.tool.slug || alt.tool.name)}
                           target="_blank"
-                          rel="sponsored noopener noreferrer"
-                          className="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow"
+                          rel="noopener noreferrer"
+                          className="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow cursor-pointer"
                         >
                           Explore {alt.tool.name}
                           <ExternalLink className="w-3 h-3" />

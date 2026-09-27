@@ -1,4 +1,5 @@
 import { SoftwareTool, AuthorProfile } from '../types';
+import { getToolOfficialUrl } from './saasWebsites';
 
 export const AUTHORS: Record<string, AuthorProfile> = {
   alexVance: {
@@ -52,7 +53,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '100 req/min (Pro), Custom Enterprise',
     nativeIntegrationsCount: 7200,
-    affiliateUrl: 'https://stackpipeline.com/go/zapier?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('zapier'),
+    websiteUrl: getToolOfficialUrl('zapier'),
     affiliatePartnerId: 'SP-ZAP-8491',
     pros: [
       'Vast ecosystem with 7,000+ verified native integrations',
@@ -83,7 +85,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '100 req/10sec (150 req/10sec with API add-on)',
     nativeIntegrationsCount: 1500,
-    affiliateUrl: 'https://stackpipeline.com/go/hubspot?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('hubspot'),
+    websiteUrl: getToolOfficialUrl('hubspot'),
     affiliatePartnerId: 'SP-HUB-3092',
     pros: [
       'Comprehensive single customer view with unified activity timeline',
@@ -114,7 +117,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '40 ops/sec per scenario',
     nativeIntegrationsCount: 1800,
-    affiliateUrl: 'https://stackpipeline.com/go/make?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('make'),
+    websiteUrl: getToolOfficialUrl('make'),
     affiliatePartnerId: 'SP-MAK-1102',
     pros: [
       'Significantly lower cost per operation compared to legacy tools',
@@ -144,7 +148,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '100,000 calls per 24-hour rolling window (Enterprise)',
     nativeIntegrationsCount: 4500,
-    affiliateUrl: 'https://stackpipeline.com/go/salesforce?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('salesforce'),
+    websiteUrl: getToolOfficialUrl('salesforce'),
     affiliatePartnerId: 'SP-SFDC-9921',
     pros: [
       'Unmatched enterprise customization and Apex governance',
@@ -173,7 +178,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: 'Configurable concurrent row execution',
     nativeIntegrationsCount: 120,
-    affiliateUrl: 'https://stackpipeline.com/go/clay?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('clay'),
+    websiteUrl: getToolOfficialUrl('clay'),
     affiliatePartnerId: 'SP-CLAY-4029',
     pros: [
       'Waterfall enrichment automatically cascades across providers',
@@ -202,7 +208,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '600 req/hour on standard plans',
     nativeIntegrationsCount: 85,
-    affiliateUrl: 'https://stackpipeline.com/go/apollo?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('apollo'),
+    websiteUrl: getToolOfficialUrl('apollo'),
     affiliatePartnerId: 'SP-APO-7712',
     pros: [
       '275M+ verified B2B buyer contacts and company profiles',
@@ -231,7 +238,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: 'SQL REST API with automatic multi-cluster scaling',
     nativeIntegrationsCount: 650,
-    affiliateUrl: 'https://stackpipeline.com/go/snowflake?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('snowflake'),
+    websiteUrl: getToolOfficialUrl('snowflake'),
     affiliatePartnerId: 'SP-SNOW-5531',
     pros: [
       'Zero-management compute and storage decoupling',
@@ -260,7 +268,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '5 requests per second per base',
     nativeIntegrationsCount: 450,
-    affiliateUrl: 'https://stackpipeline.com/go/airtable?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('airtable'),
+    websiteUrl: getToolOfficialUrl('airtable'),
     affiliatePartnerId: 'SP-AIR-1903',
     pros: [
       'Intuitive spreadsheet interface with real relational linked records',
@@ -289,7 +298,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '100 req/sec in live mode (up to 1,000 req/sec enterprise)',
     nativeIntegrationsCount: 850,
-    affiliateUrl: 'https://stackpipeline.com/go/stripe?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('stripe'),
+    websiteUrl: getToolOfficialUrl('stripe'),
     affiliatePartnerId: 'SP-STRP-9021',
     pros: [
       'Gold standard cryptographically signed webhook signatures (Stripe-Signature)',
@@ -319,7 +329,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: 'Unlimited (Self-hosted), 2,500 executions/mo (Cloud Starter)',
     nativeIntegrationsCount: 500,
-    affiliateUrl: 'https://stackpipeline.com/go/n8n?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('n8n'),
+    websiteUrl: getToolOfficialUrl('n8n'),
     affiliatePartnerId: 'SP-N8N-3419',
     pros: [
       'Can be 100% self-hosted via Docker for zero data residency & HIPAA compliance',
@@ -349,7 +360,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: 'Enterprise scalable burst limits with on-premise agents',
     nativeIntegrationsCount: 1200,
-    affiliateUrl: 'https://stackpipeline.com/go/workato?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('workato'),
+    websiteUrl: getToolOfficialUrl('workato'),
     affiliatePartnerId: 'SP-WKT-6012',
     pros: [
       'Enterprise-grade RBAC, SOC 2 Type II, audit logs, and data masking',
@@ -379,7 +391,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '500 requests/sec API ingress (10,000+ enterprise)',
     nativeIntegrationsCount: 450,
-    affiliateUrl: 'https://stackpipeline.com/go/segment?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('segment'),
+    websiteUrl: getToolOfficialUrl('segment'),
     affiliatePartnerId: 'SP-SEG-4421',
     pros: [
       'Single SDK to track identify(), track(), and page() calls across all web & mobile apps',
@@ -409,7 +422,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '100,000 API calls per day (Streaming ingest up to 1GB/sec)',
     nativeIntegrationsCount: 520,
-    affiliateUrl: 'https://stackpipeline.com/go/bigquery?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('bigquery'),
+    websiteUrl: getToolOfficialUrl('bigquery'),
     affiliatePartnerId: 'SP-BQ-8812',
     pros: [
       'Pure serverless model: zero cluster provisioning, sizing, or idle cluster costs',
@@ -439,7 +453,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: 'Connection pool capped by instance RAM/vCPU',
     nativeIntegrationsCount: 1500,
-    affiliateUrl: 'https://stackpipeline.com/go/postgres?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('postgres'),
+    websiteUrl: getToolOfficialUrl('postgres'),
     affiliatePartnerId: 'SP-PG-1002',
     pros: [
       'Full ACID compliance with rich JSONB indexing and relational integrity',
@@ -469,7 +484,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '700 requests/minute on Suite Enterprise plans',
     nativeIntegrationsCount: 1250,
-    affiliateUrl: 'https://stackpipeline.com/go/zendesk?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('zendesk'),
+    websiteUrl: getToolOfficialUrl('zendesk'),
     affiliatePartnerId: 'SP-ZEN-3129',
     pros: [
       'Granular Trigger and Automation engines with custom Webhook Targets',
@@ -499,7 +515,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '1 message per second per channel (Burst up to Tier 3)',
     nativeIntegrationsCount: 2600,
-    affiliateUrl: 'https://stackpipeline.com/go/slack?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('slack'),
+    websiteUrl: getToolOfficialUrl('slack'),
     affiliatePartnerId: 'SP-SLK-7201',
     pros: [
       'Incoming Webhooks allow rich JSON Block Kit interactive buttons and cards',
@@ -529,7 +546,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '1,000 req/min (up to 3,000 enterprise)',
     nativeIntegrationsCount: 350,
-    affiliateUrl: 'https://stackpipeline.com/go/intercom?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('intercom'),
+    websiteUrl: getToolOfficialUrl('intercom'),
     affiliatePartnerId: 'SP-INT-8912',
     pros: [
       'Fin AI Agent resolves up to 50% of routine customer support inquiries automatically',
@@ -559,7 +577,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: 'Fully managed continuous sync schedules (down to 1-min syncs)',
     nativeIntegrationsCount: 500,
-    affiliateUrl: 'https://stackpipeline.com/go/fivetran?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('fivetran'),
+    websiteUrl: getToolOfficialUrl('fivetran'),
     affiliatePartnerId: 'SP-FIV-2291',
     pros: [
       'Automated schema migration: detects new tables and columns in source and updates target',
@@ -589,7 +608,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '3 requests per second per integration token',
     nativeIntegrationsCount: 300,
-    affiliateUrl: 'https://stackpipeline.com/go/notion?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('notion'),
+    websiteUrl: getToolOfficialUrl('notion'),
     affiliatePartnerId: 'SP-NOT-5102',
     pros: [
       'Extremely flexible block-based data model with database properties and formulas',
@@ -619,7 +639,8 @@ export const SAAS_TOOLS: SoftwareTool[] = [
     webhookSupport: true,
     apiRateLimit: '40 to 80 requests per 2-second window',
     nativeIntegrationsCount: 400,
-    affiliateUrl: 'https://stackpipeline.com/go/pipedrive?ref=stackpipeline&utm_source=b2b_saas',
+    affiliateUrl: getToolOfficialUrl('pipedrive'),
+    websiteUrl: getToolOfficialUrl('pipedrive'),
     affiliatePartnerId: 'SP-PIP-1982',
     pros: [
       'Intuitive kanban visual sales pipeline with activity-based selling philosophy',

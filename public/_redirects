@@ -1,3 +1,47 @@
+# Cloudflare Pages 302 Outbound Redirects to Official SaaS Websites
+/go/linear https://linear.app 302
+/go/hubspot https://www.hubspot.com 302
+/go/zapier https://zapier.com 302
+/go/make https://www.make.com 302
+/go/slack https://slack.com 302
+/go/stripe https://stripe.com 302
+/go/supabase https://supabase.com 302
+/go/salesforce https://www.salesforce.com 302
+/go/snowflake https://www.snowflake.com 302
+/go/airtable https://airtable.com 302
+/go/n8n https://n8n.io 302
+/go/workato https://www.workato.com 302
+/go/segment https://segment.com 302
+/go/bigquery https://cloud.google.com/bigquery 302
+/go/postgres https://www.postgresql.org 302
+/go/postgresql https://www.postgresql.org 302
+/go/zendesk https://www.zendesk.com 302
+/go/intercom https://www.intercom.com 302
+/go/fivetran https://www.fivetran.com 302
+/go/notion https://www.notion.so 302
+/go/pipedrive https://www.pipedrive.com 302
+/go/clickup https://clickup.com 302
+/go/asana https://asana.com 302
+/go/jira https://www.atlassian.com/software/jira 302
+/go/datadog https://www.datadoghq.com 302
+/go/mixpanel https://mixpanel.com 302
+/go/amplitude https://amplitude.com 302
+/go/census https://www.getcensus.com 302
+/go/hightouch https://hightouch.com 302
+/go/airbyte https://airbyte.com 302
+/go/retool https://retool.com 302
+/go/chargebee https://www.chargebee.com 302
+/go/rudderstack https://www.rudderstack.com 302
+/go/pagerduty https://www.pagerduty.com 302
+/go/postman https://www.postman.com 302
+/go/activecampaign https://www.activecampaign.com 302
+/go/close https://www.close.com 302
+/go/clay https://www.clay.com 302
+/go/apollo https://www.apollo.io 302
+/go/appsmith https://www.appsmith.com 302
+/go/webflow https://webflow.com 302
+/go/klaviyo https://www.klaviyo.com 302
+/go/gong https://www.gong.io 302
+
 # Cloudflare Pages SPA Routing
-# Static assets and exact files (e.g. sitemap.xml, rss.xml, ads.txt, robots.txt) take precedence automatically
 /*    /index.html   200
