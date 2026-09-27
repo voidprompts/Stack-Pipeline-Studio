@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ThumbsUp, Lightbulb, Bookmark, Share2, Check, Printer } from 'lucide-react';
 import { ArticleReactionsState } from '../types';
+import { getCanonicalArticleUrl } from '../data/canonicalConfig';
 
 interface ArticleReactionsProps {
   articleId: string;
@@ -70,7 +71,7 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({
   };
 
   const handleShare = async () => {
-    const directUrl = url || (typeof window !== 'undefined' ? `${window.location.origin}/?article=${articleId}` : `https://stackpipeline.com/?article=${articleId}`);
+    const directUrl = url || getCanonicalArticleUrl(articleId);
     if (navigator.share) {
       try {
         await navigator.share({

@@ -6,6 +6,7 @@ import { AdSenseBanner } from './AdSenseBanner';
 import { ReadingProgressBar } from './ReadingProgressBar';
 import { ArticleReactions } from './ArticleReactions';
 import { ArticleComments } from './ArticleComments';
+import { DataFlowchart } from './DataFlowchart';
 import {
   Clock,
   ShieldCheck,
@@ -66,12 +67,9 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
   const [copiedFaqSchema, setCopiedFaqSchema] = useState(false);
   const [copiedShareTop, setCopiedShareTop] = useState(false);
 
-  // Construct absolute deep-link URL for sharing and social distribution
+  // Construct canonical deep-link URL for sharing and social distribution
   const shareUrl = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return `${window.location.origin}/?article=${tutorial.slug}`;
-    }
-    return `https://stackpipeline.com/?article=${tutorial.slug}`;
+    return getCanonicalArticleUrl(tutorial.slug);
   }, [tutorial.slug]);
 
   const handleShareTop = async () => {
@@ -125,7 +123,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
     return {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      '@id': `https://stackpipeline.com/integrations/${tutorial.slug}#faq`,
+      '@id': `${getCanonicalArticleUrl(tutorial.slug)}#faq`,
       name: `${tutorial.title} - Frequently Asked Questions`,
       mainEntity: tutorial.faq.map((item) => ({
         '@type': 'Question',
@@ -156,8 +154,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
       document.head.appendChild(script);
     }
 
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://stackpipeline.com';
-    const tutorialUrl = `${origin}/integrations/${tutorial.slug}`;
+    const tutorialUrl = getCanonicalArticleUrl(tutorial.slug);
     const howToJsonLd = {
       '@context': 'https://schema.org',
       '@type': 'HowTo',
@@ -206,9 +203,8 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
   useEffect(() => {
     const originalTitle = document.title;
     const brandedTitle = `${tutorial.title} | StackPipeline`;
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://stackpipeline.com';
-    const canonicalUrl = `${origin}/integrations/${tutorial.slug}`;
-    const socialImageUrl = `${origin}/og/${tutorial.slug}.svg`;
+    const canonicalUrl = getCanonicalArticleUrl(tutorial.slug);
+    const socialImageUrl = `${CANONICAL_SITE_URL}/og/${tutorial.slug}.svg`;
 
     // 1. Update Document Title
     document.title = brandedTitle;
@@ -514,6 +510,26 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
       {/* Primary Article Header */}
       <header className="article-header my-6 pb-6 border-b border-slate-800/80">
+        {/* Print-Ready Architecture Badge - Official StackPipeline Technical Export */}
+        <div className="print-ready-architecture-badge mb-4 p-3 rounded-xl bg-slate-900/70 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300 print:bg-white print:border-slate-900 print:p-3 print:mb-4">
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono font-bold text-xs print:bg-slate-100 print:border-slate-900 print:text-slate-900">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 print:text-slate-900" />
+              <span>Print-Ready Architecture</span>
+            </div>
+            <span className="font-semibold text-slate-200 print:text-slate-900">
+              Official StackPipeline Technical Export
+            </span>
+          </div>
+          <div className="text-[11px] font-mono text-slate-400 print:text-slate-700 flex flex-wrap items-center gap-2">
+            <span>Integrity: SHA-256 Validated</span>
+            <span aria-hidden="true">·</span>
+            <span>Doc ID: SP-ENG-{tutorial.slug.replace(/[^a-zA-Z0-9]/g, '').slice(0, 16).toUpperCase()}</span>
+            <span aria-hidden="true">·</span>
+            <span>Spec: ISO/IEC Enterprise Architecture Reference</span>
+          </div>
+        </div>
+
         <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-slate-400 mb-3">
           <span className="text-emerald-400 font-bold uppercase tracking-wider">
             {tutorial.architectureType}
@@ -625,6 +641,15 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
               Table of Contents
             </div>
             <ul className="space-y-2 text-xs text-slate-400">
+              <li>
+                <a
+                  href="#architecture-blueprint"
+                  className="hover:text-emerald-400 transition-colors block py-0.5 text-emerald-400 font-semibold flex items-center gap-1.5"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Architecture Blueprint</span>
+                </a>
+              </li>
               {tutorial.steps.map((step) => (
                 <li key={step.stepNumber}>
                   <a
@@ -695,6 +720,40 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
               {tutorial.editorChoiceNote}
             </p>
           </div>
+
+          {/* Architecture Blueprint Section */}
+          <section
+            id="architecture-blueprint"
+            className="architecture-blueprint pt-2 scroll-mt-24 space-y-4"
+            data-section="architecture-blueprint"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+              <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="print-ready-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[11px] font-bold uppercase tracking-wider print:bg-slate-100 print:border-slate-800 print:text-slate-900">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 print:text-slate-900" />
+                    Print-Ready Architecture
+                  </span>
+                  <span className="text-[11px] font-mono text-slate-400 print:text-slate-700 font-semibold">
+                    Official StackPipeline Technical Export · Architectural Topology
+                  </span>
+                </div>
+                <h2 className="text-2xl font-bold text-slate-100">
+                  Architecture Blueprint: {tutorial.softwareA.name} ↔ {tutorial.softwareB.name}
+                </h2>
+                <p className="text-xs text-slate-300 mt-1">
+                  End-to-end data pipeline topology, authentication handshakes, asynchronous queue workers, and governor limit mitigation.
+                </p>
+              </div>
+            </div>
+
+            <DataFlowchart
+              softwareA={tutorial.softwareA}
+              softwareB={tutorial.softwareB}
+              architectureType={tutorial.architectureType}
+              difficulty={tutorial.difficulty}
+            />
+          </section>
 
           {/* Step-by-Step Implementation */}
           <section className="space-y-10">

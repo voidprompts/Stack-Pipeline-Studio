@@ -318,6 +318,57 @@
     margin-bottom: 10pt !important;
   }
 
+  /* ==========================================================================
+     ARCHITECTURE BLUEPRINT & TECHNICAL DIAGRAM PRINT ENGINE
+     Forces page breaks immediately after the Architecture Blueprint section
+     Ensures technical diagrams and pipeline topology never split across sheets
+     ========================================================================== */
+  #architecture-blueprint,
+  .architecture-blueprint,
+  [data-section="architecture-blueprint"] {
+    display: block !important;
+    visibility: visible !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    margin-bottom: 24pt !important;
+    clear: both !important;
+  }
+
+  /* Prevent any diagrams, SVG topologies, or nodes inside Architecture Blueprint from splitting */
+  #architecture-blueprint svg,
+  .architecture-blueprint svg,
+  .flowchart-container,
+  .data-flowchart-container,
+  #architecture-blueprint div[class*="overflow-hidden"],
+  .architecture-blueprint div[class*="overflow-hidden"] {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Print-Ready Architecture Badge styling for official PDF exports */
+  .print-ready-architecture-badge,
+  .print-ready-badge {
+    display: flex !important;
+    visibility: visible !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    background-color: #f8fafc !important;
+    border: 1.5pt solid #0f172a !important;
+    color: #0f172a !important;
+    padding: 6pt 10pt !important;
+    margin-bottom: 12pt !important;
+  }
+
+  .print-ready-architecture-badge *,
+  .print-ready-badge * {
+    color: #0f172a !important;
+  }
+
   /* Show hyperlinked official domains in print */
   a[href^="http"]:not([href*="stackpipeline.com"]):not([href*="pages.dev"])::after {
     content: " (" attr(href) ")";
