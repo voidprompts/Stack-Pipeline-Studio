@@ -18,6 +18,8 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
+  Minimize2,
+  Scan,
   ArrowRight,
   ShieldCheck,
 } from 'lucide-react';
@@ -59,7 +61,19 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
   const [highlightBottlenecks, setHighlightBottlenecks] = useState(true);
   const [animateFlow, setAnimateFlow] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [isFitMode, setIsFitMode] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const filterId = useId();
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
 
   const isBidirectional = architectureType === 'Bidirectional Sync';
   const isBatchETL = architectureType === 'Scheduled Batch ETL';
@@ -142,10 +156,10 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
       id: 'node-gateway',
       title:
         difficulty === 'Beginner'
-          ? 'OAuth & Access Guard'
+          ? 'OAuth Access Guard'
           : isBatchETL
           ? 'Token Vault & Scheduler'
-          : 'Ingress & Auth Gateway',
+          : 'Ingress & Auth Guard',
       subtitle:
         difficulty === 'Beginner'
           ? 'No-Code Auth Vault'
@@ -337,8 +351,8 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
       title: isBatchETL
         ? 'Bulk Upsert Dispatcher'
         : difficulty === 'Advanced'
-        ? 'Circuit Breaker & Backoff'
-        : 'Retry & Rate Throttle',
+        ? 'Circuit Breaker & Retry'
+        : 'Retry & Rate Guard',
       subtitle: isBatchETL
         ? 'Chunked REST Ingestion'
         : 'Governor Rate Throttle',
@@ -470,7 +484,13 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
   };
 
   return (
-    <div className="my-6 rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden shadow-2xl">
+    <div
+      className={`my-6 rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl transition-all ${
+        isFullscreen
+          ? 'fixed inset-0 z-50 m-0 rounded-none overflow-y-auto flex flex-col justify-between'
+          : 'overflow-hidden'
+      }`}
+    >
       {/* Top Toolbar */}
       <div className="p-4 bg-slate-900/80 border-b border-slate-800 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div>
@@ -524,45 +544,107 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
             <span>Packets: {animateFlow ? 'Streaming' : 'Static'}</span>
           </button>
 
+          {/* Fit Width Toggle Button */}
+          <button
+            onClick={() => {
+              setIsFitMode(true);
+              setZoomLevel(1);
+            }}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
+              isFitMode
+                ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/60 shadow-sm'
+                : 'bg-slate-800/80 text-slate-400 border-slate-700 hover:text-slate-200'
+            }`}
+            title="Auto-fit all 6 pipeline nodes to viewport without horizontal clipping"
+          >
+            <Scan className="w-3.5 h-3.5" />
+            <span>Auto-Fit</span>
+          </button>
+
           {/* Zoom Controls */}
           <div className="flex items-center rounded-lg bg-slate-900 border border-slate-800 p-0.5">
             <button
-              onClick={() => setZoomLevel((z) => Math.max(0.75, Number((z - 0.1).toFixed(2))))}
+              onClick={() => {
+                setIsFitMode(false);
+                setZoomLevel((z) => Math.max(0.65, Number((z - 0.15).toFixed(2))));
+              }}
               className="p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
               title="Zoom Out"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="text-[10px] font-mono text-slate-300 px-2">
-              {Math.round(zoomLevel * 100)}%
-            </span>
             <button
-              onClick={() => setZoomLevel((z) => Math.min(1.4, Number((z + 0.1).toFixed(2))))}
+              onClick={() => {
+                if (isFitMode) {
+                  setIsFitMode(false);
+                  setZoomLevel(1);
+                } else {
+                  setIsFitMode(true);
+                  setZoomLevel(1);
+                }
+              }}
+              className="text-[10px] font-mono text-slate-300 px-2 hover:text-emerald-400 transition-colors"
+              title="Toggle Auto-Fit / 100%"
+            >
+              {isFitMode ? 'Fit' : `${Math.round(zoomLevel * 100)}%`}
+            </button>
+            <button
+              onClick={() => {
+                setIsFitMode(false);
+                setZoomLevel((z) => Math.min(1.5, Number((z + 0.15).toFixed(2))));
+              }}
               className="p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors"
               title="Zoom In"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button
-              onClick={() => setZoomLevel(1)}
+              onClick={() => {
+                setIsFitMode(true);
+                setZoomLevel(1);
+              }}
               className="p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors ml-1"
-              title="Reset Zoom"
+              title="Reset to Auto-Fit"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          {/* Fullscreen Expand Toggle */}
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className={`p-1.5 rounded-lg border transition-colors ${
+              isFullscreen
+                ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/60'
+                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200 hover:bg-slate-800'
+            }`}
+            title={isFullscreen ? 'Exit Fullscreen (Esc)' : 'Expand Fullscreen'}
+          >
+            {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+          </button>
         </div>
       </div>
 
       {/* SVG Canvas Area */}
-      <div className="relative w-full overflow-x-auto bg-[#030712] border-b border-slate-800 select-none py-4">
+      <div className="relative w-full overflow-x-auto bg-[#030712] border-b border-slate-800 select-none py-4 px-2 scrollbar-thin scrollbar-thumb-slate-800">
+        {/* Mobile horizontal swipe cue */}
+        <div className="md:hidden flex items-center justify-end px-3 pb-2 text-[10px] font-mono text-slate-500">
+          <span>⇄ Swipe horizontally to explore full pipeline</span>
+        </div>
+
         <div
-          className="mx-auto transition-transform duration-200 origin-top"
-          style={{ transform: `scale(${zoomLevel})`, width: '1140px', height: '450px' }}
+          className={`mx-auto transition-all duration-200 ${
+            isFitMode ? 'w-full max-w-full min-w-[660px] md:min-w-0' : ''
+          }`}
+          style={
+            isFitMode
+              ? { width: '100%' }
+              : { width: `${Math.round(1140 * zoomLevel)}px`, minWidth: `${Math.round(1140 * zoomLevel)}px` }
+          }
         >
           <svg
             viewBox="0 0 1140 450"
-            className="w-full h-full"
+            className="w-full h-auto block select-none drop-shadow-sm"
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
@@ -832,11 +914,11 @@ export const DataFlowchart: React.FC<DataFlowchartProps> = ({
                     x="12"
                     y="46"
                     fill="#f8fafc"
-                    fontSize="13"
+                    fontSize={node.title.length > 17 ? '11.5' : '13'}
                     fontWeight="700"
                     fontFamily="system-ui, sans-serif"
                   >
-                    {node.title.length > 15 ? `${node.title.slice(0, 14)}...` : node.title}
+                    {node.title.length > 21 ? `${node.title.slice(0, 20)}..` : node.title}
                   </text>
 
                   {/* Metric or Protocol Indicator */}
