@@ -17,12 +17,15 @@ import {
   Menu,
   X,
   Download,
+  Smartphone,
 } from 'lucide-react';
+import { PWAInstallButton } from './InstallAppModal';
 
 interface NavbarProps {
   onOpenBookmarks?: () => void;
   onOpenNewsletter?: () => void;
   onOpenRSS?: () => void;
+  onOpenInstallApp?: () => void;
   savedCount?: number;
   activeView: 'blog' | 'tutorial' | 'matrix' | 'studio';
   setActiveView: (view: 'blog' | 'tutorial' | 'matrix' | 'studio') => void;
@@ -32,6 +35,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenBookmarks,
   onOpenNewsletter,
   onOpenRSS,
+  onOpenInstallApp,
   savedCount = 0,
   activeView,
   setActiveView,
@@ -116,6 +120,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Action Buttons Toolbar */}
         <div className="flex items-center gap-2">
+          {/* PWA Install Button (Android / iOS / Desktop) */}
+          {onOpenInstallApp && (
+            <PWAInstallButton
+              onOpenModal={onOpenInstallApp}
+              className="cursor-pointer"
+            />
+          )}
+
           {/* Saved Articles Reading Library */}
           {onOpenBookmarks && (
             <button
@@ -238,6 +250,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           <div className="pt-2 border-t border-slate-800/80 flex flex-wrap gap-2 text-xs">
+            {onOpenInstallApp && (
+              <button
+                onClick={() => {
+                  onOpenInstallApp();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full py-2.5 px-3 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 rounded-xl text-emerald-300 font-bold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              >
+                <Smartphone className="w-4 h-4 text-emerald-400" />
+                <span>Install Mobile App (Android APK / iOS)</span>
+              </button>
+            )}
+
             {onOpenBookmarks && (
               <button
                 onClick={() => {

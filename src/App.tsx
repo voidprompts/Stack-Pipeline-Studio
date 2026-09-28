@@ -19,6 +19,8 @@ import { AuthorProfileModal } from './components/AuthorProfileModal';
 import { BookmarksDrawer } from './components/BookmarksDrawer';
 import { RSSFeedModal } from './components/RSSFeedModal';
 import { NewsletterModal } from './components/NewsletterModal';
+import { InstallAppModal } from './components/InstallAppModal';
+import { OfflineIndicator } from './components/OfflineIndicator';
 import { SoftwareTool, IntegrationTutorial, Author, ToolComparison, ToolAlternativesHub, UnifiedArticle } from './types';
 import { COMPARISONS_DATA } from './data/comparisonsData';
 import { ALTERNATIVES_DATA } from './data/alternativesData';
@@ -192,6 +194,7 @@ export default function App() {
   const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
   const [isAuthorModalOpen, setIsAuthorModalOpen] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
+  const [isInstallAppModalOpen, setIsInstallAppModalOpen] = useState(false);
   const [legalTab, setLegalTab] = useState<'privacy' | 'terms' | 'affiliate' | 'editorial'>('privacy');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
 
@@ -653,6 +656,7 @@ export default function App() {
         onOpenBookmarks={() => setIsBookmarksOpen(true)}
         onOpenNewsletter={() => setIsNewsletterOpen(true)}
         onOpenRSS={() => setIsRSSOpen(true)}
+        onOpenInstallApp={() => setIsInstallAppModalOpen(true)}
         savedCount={bookmarkedIds.length}
         activeView={activeView}
         setActiveView={handleNavigateView}
@@ -971,12 +975,20 @@ export default function App() {
         onClose={() => setIsNewsletterOpen(false)}
       />
 
+      <InstallAppModal
+        isOpen={isInstallAppModalOpen}
+        onClose={() => setIsInstallAppModalOpen(false)}
+      />
+
+      <OfflineIndicator />
+
       {/* Footer */}
       <Footer
         onOpenLegal={handleOpenLegal}
         onOpenNewsletter={() => setIsNewsletterOpen(true)}
         onOpenRSS={() => setIsRSSOpen(true)}
         onOpenBookmarks={() => setIsBookmarksOpen(true)}
+        onOpenInstallApp={() => setIsInstallAppModalOpen(true)}
       />
     </div>
   );

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Layers, ExternalLink, Linkedin, Github } from 'lucide-react';
+import { Layers, ExternalLink, Linkedin, Github, Smartphone } from 'lucide-react';
 
 interface FooterProps {
   onOpenLegal: (tab: 'privacy' | 'terms' | 'affiliate' | 'editorial') => void;
   onOpenNewsletter?: () => void;
   onOpenRSS?: () => void;
   onOpenBookmarks?: () => void;
+  onOpenInstallApp?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -13,6 +14,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenNewsletter,
   onOpenRSS,
   onOpenBookmarks,
+  onOpenInstallApp,
 }) => {
   return (
     <footer className="mt-20 border-t border-slate-800/80 bg-slate-950 text-xs text-slate-400">
@@ -100,6 +102,17 @@ export const Footer: React.FC<FooterProps> = ({
               Publisher &amp; Resources
             </div>
             <ul className="space-y-2">
+              {onOpenInstallApp && (
+                <li>
+                  <button
+                    onClick={onOpenInstallApp}
+                    className="hover:text-emerald-400 text-emerald-400 font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Install Mobile App (PWA / APK)</span>
+                  </button>
+                </li>
+              )}
               {onOpenNewsletter && (
                 <li>
                   <button
