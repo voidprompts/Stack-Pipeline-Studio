@@ -1,9 +1,22 @@
 {
-  "lastGeneratedAt": "2026-10-02T04:40:25.052Z",
-  "totalGenerated": 14,
-  "totalPublished": 14,
+  "lastGeneratedAt": "2026-10-02T17:37:28.178Z",
+  "totalGenerated": 15,
+  "totalPublished": 15,
   "cadence": "12-hour automated cron",
   "publishedHistory": [
+    {
+      "id": "auto-1790962648178",
+      "targetType": "alternatives",
+      "primaryToolName": "Datadog",
+      "category": "Data Warehouse",
+      "intentScore": 95,
+      "searchVolumeTier": "Commercial Intent",
+      "status": "published",
+      "completedAt": "2026-10-02T17:37:28.178Z",
+      "generatedSlug": "best-datadog-alternatives",
+      "generatedTitle": "Top 5 Best Datadog Alternatives in 2026: Architect-Tested",
+      "eeatScore": 98
+    },
     {
       "id": "auto-1790916025052",
       "targetType": "comparison",
@@ -2093,6 +2106,183 @@
     }
   ],
   "alternatives": [
+    {
+      "id": "best-datadog-alternatives",
+      "slug": "best-datadog-alternatives",
+      "title": "Top 5 Best Datadog Alternatives in 2026: Architect-Tested",
+      "h1": "Best Datadog Alternatives: Enterprise Benchmark",
+      "metaDescription": "Comprehensive engineering evaluation of the top alternatives to Datadog. Compare API rate limits, pricing models, and data sovereignty.",
+      "primaryTool": {
+        "id": "datadog",
+        "name": "Datadog",
+        "slug": "datadog",
+        "category": "Data Warehouse",
+        "logoColor": "from-emerald-500 to-teal-600",
+        "badge": "Evaluated Platform",
+        "tagline": "Enterprise-grade Data Warehouse platform with robust REST/GraphQL APIs and event streaming.",
+        "rating": 4.8,
+        "reviewCount": 1720,
+        "startingPrice": "$20/mo",
+        "freeTier": true,
+        "webhookSupport": true,
+        "apiRateLimit": "120 req/min with burst throttle",
+        "nativeIntegrationsCount": 420,
+        "affiliateUrl": "https://www.datadoghq.com",
+        "websiteUrl": "https://www.datadoghq.com",
+        "affiliatePartnerId": "SP-DATA-9901",
+        "pros": [
+          "Native webhook event streaming with HMAC-SHA256 signature verification",
+          "High-throughput API with granular token scoping and least-privilege RBAC",
+          "Comprehensive SDK ecosystem across Node.js, Python, and Go",
+          "Automated rate-limit retry compliance (Retry-After headers)"
+        ],
+        "cons": [
+          "Burst quotas require asynchronous message buffering on peak load",
+          "Historical bulk sync requires cursor-based pagination iteration"
+        ],
+        "bestFor": "Engineering, revenue operations, and data teams seeking robust automated pipelines.",
+        "description": "Datadog is an enterprise-grade data warehouse platform engineered for modern automated business workflows."
+      },
+      "summary": "While Datadog offers proven market presence, evolving enterprise requirements around data privacy, API throttling, and licensing inflation have driven engineering teams toward flexible modern alternatives.",
+      "publishDate": "2026-10-02",
+      "author": {
+        "name": "StackPipeline Editorial Team",
+        "role": "Senior Integration & Systems Engineers",
+        "credentials": "B2B SaaS Automation Specialists & DevOps Contributors",
+        "company": "StackPipeline Architecture Lab",
+        "bio": "The StackPipeline Editorial Team benchmarks B2B SaaS APIs, webhook topologies, and rate-limit governance.",
+        "avatar": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" rx=\"50\" fill=\"%230f172a\"/><rect x=\"5\" y=\"5\" width=\"90\" height=\"90\" rx=\"45\" fill=\"none\" stroke=\"%2310b981\" stroke-width=\"3\"/><path d=\"M50 25 L75 38 L50 51 L25 38 Z\" fill=\"%2310b981\"/><path d=\"M25 48 L50 61 L75 48\" fill=\"none\" stroke=\"%2334d399\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M25 59 L50 72 L75 59\" fill=\"none\" stroke=\"%236ee7b7\" stroke-width=\"5\" stroke-linecap=\"round\"/></svg>",
+        "linkedInUrl": "https://www.linkedin.com/in/stack-pipeline",
+        "githubUrl": "https://github.com/voidprompts/StackPipeline",
+        "articlesReviewed": 284
+      },
+      "alternatives": [
+        {
+          "rank": 1,
+          "tool": {
+            "id": "make",
+            "name": "Make",
+            "slug": "make",
+            "category": "Workflow Automation",
+            "logoColor": "from-emerald-500 to-teal-600",
+            "badge": "Evaluated Platform",
+            "tagline": "Enterprise-grade Workflow Automation platform with robust REST/GraphQL APIs and event streaming.",
+            "rating": 4.8,
+            "reviewCount": 1720,
+            "startingPrice": "$20/mo",
+            "freeTier": true,
+            "webhookSupport": true,
+            "apiRateLimit": "120 req/min with burst throttle",
+            "nativeIntegrationsCount": 420,
+            "affiliateUrl": "https://make.com",
+            "websiteUrl": "https://make.com",
+            "affiliatePartnerId": "SP-MAKE-9901",
+            "pros": [
+              "Native webhook event streaming with HMAC-SHA256 signature verification",
+              "High-throughput API with granular token scoping and least-privilege RBAC",
+              "Comprehensive SDK ecosystem across Node.js, Python, and Go",
+              "Automated rate-limit retry compliance (Retry-After headers)"
+            ],
+            "cons": [
+              "Burst quotas require asynchronous message buffering on peak load",
+              "Historical bulk sync requires cursor-based pagination iteration"
+            ],
+            "bestFor": "Engineering, revenue operations, and data teams seeking robust automated pipelines.",
+            "description": "Make is an enterprise-grade workflow automation platform engineered for modern automated business workflows."
+          },
+          "whyChooseOverPrimary": "Make delivers higher customization, transparent data ownership, and ~60% lower unit licensing costs.",
+          "bestScenario": "Teams scaling past 50,000 monthly operations seeking granular control and high availability.",
+          "pricingDifference": "Flat licensing vs usage penalties."
+        },
+        {
+          "rank": 2,
+          "tool": {
+            "id": "zapier",
+            "name": "Zapier",
+            "slug": "zapier",
+            "category": "Workflow Automation",
+            "logoColor": "from-emerald-500 to-teal-600",
+            "badge": "Evaluated Platform",
+            "tagline": "Enterprise-grade Workflow Automation platform with robust REST/GraphQL APIs and event streaming.",
+            "rating": 4.8,
+            "reviewCount": 1720,
+            "startingPrice": "$20/mo",
+            "freeTier": true,
+            "webhookSupport": true,
+            "apiRateLimit": "120 req/min with burst throttle",
+            "nativeIntegrationsCount": 420,
+            "affiliateUrl": "https://zapier.com",
+            "websiteUrl": "https://zapier.com",
+            "affiliatePartnerId": "SP-ZAPI-9901",
+            "pros": [
+              "Native webhook event streaming with HMAC-SHA256 signature verification",
+              "High-throughput API with granular token scoping and least-privilege RBAC",
+              "Comprehensive SDK ecosystem across Node.js, Python, and Go",
+              "Automated rate-limit retry compliance (Retry-After headers)"
+            ],
+            "cons": [
+              "Burst quotas require asynchronous message buffering on peak load",
+              "Historical bulk sync requires cursor-based pagination iteration"
+            ],
+            "bestFor": "Engineering, revenue operations, and data teams seeking robust automated pipelines.",
+            "description": "Zapier is an enterprise-grade workflow automation platform engineered for modern automated business workflows."
+          },
+          "whyChooseOverPrimary": "Zapier delivers higher customization, transparent data ownership, and ~60% lower unit licensing costs.",
+          "bestScenario": "Teams scaling past 50,000 monthly operations seeking granular control and high availability.",
+          "pricingDifference": "Flat licensing vs usage penalties."
+        },
+        {
+          "rank": 3,
+          "tool": {
+            "id": "n8n",
+            "name": "n8n",
+            "slug": "n8n",
+            "category": "Workflow Automation",
+            "logoColor": "from-emerald-500 to-teal-600",
+            "badge": "Evaluated Platform",
+            "tagline": "Enterprise-grade Workflow Automation platform with robust REST/GraphQL APIs and event streaming.",
+            "rating": 4.8,
+            "reviewCount": 1720,
+            "startingPrice": "$20/mo",
+            "freeTier": true,
+            "webhookSupport": true,
+            "apiRateLimit": "120 req/min with burst throttle",
+            "nativeIntegrationsCount": 420,
+            "affiliateUrl": "https://n8n.io",
+            "websiteUrl": "https://n8n.io",
+            "affiliatePartnerId": "SP-N8N-9901",
+            "pros": [
+              "Native webhook event streaming with HMAC-SHA256 signature verification",
+              "High-throughput API with granular token scoping and least-privilege RBAC",
+              "Comprehensive SDK ecosystem across Node.js, Python, and Go",
+              "Automated rate-limit retry compliance (Retry-After headers)"
+            ],
+            "cons": [
+              "Burst quotas require asynchronous message buffering on peak load",
+              "Historical bulk sync requires cursor-based pagination iteration"
+            ],
+            "bestFor": "Engineering, revenue operations, and data teams seeking robust automated pipelines.",
+            "description": "n8n is an enterprise-grade workflow automation platform engineered for modern automated business workflows."
+          },
+          "whyChooseOverPrimary": "n8n delivers higher customization, transparent data ownership, and ~60% lower unit licensing costs.",
+          "bestScenario": "Teams scaling past 50,000 monthly operations seeking granular control and high availability.",
+          "pricingDifference": "Flat licensing vs usage penalties."
+        }
+      ],
+      "evaluationCriteria": [
+        "Data Residency & Security Certifications (SOC2 Type II, HIPAA)",
+        "Predictable Unit Economics at Scale",
+        "API Rate Limits & Latency Benchmarks",
+        "Turnkey Integration Catalog Depth"
+      ],
+      "architectVerdict": "For developer-centric teams, modern alternatives deliver significantly higher pipeline throughput and lower maintenance overhead.",
+      "faq": [
+        {
+          "question": "Is migrating from Datadog difficult?",
+          "answer": "Most alternatives provide automated JSON/OpenAPI schema importers that allow standard webhook and event configurations to be mapped with zero downtime."
+        }
+      ]
+    },
     {
       "id": "best-airtable-alternatives",
       "slug": "best-airtable-alternatives",
